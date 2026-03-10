@@ -8,17 +8,27 @@ const nextConfig = {
         port: '5001',
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: process.env.API_HOSTNAME || 'bec-vortex-event-hub.onrender.com', // fallback
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**', // allow wildcard for production or dynamically specify
+      }
     ],
   },
   async rewrites() {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001';
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5001/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
       },
       {
         source: '/uploads/:path*',
-        destination: 'http://localhost:5001/uploads/:path*',
+        destination: `${backendUrl}/uploads/:path*`,
       },
     ];
   },

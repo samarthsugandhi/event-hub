@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: event-hub-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "5001"
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRE
+        value: "7d"
+      - key: CLIENT_URL
+        value: "https://event-hub-frontend.onrender.com"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: MAX_FILE_SIZE
+        value: "5242880"
+
+  - type: web
+    name: event-hub-frontend
+    env: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_BACKEND_URL
+        value: "https://event-hub-backend.onrender.com"
+      - key: API_HOSTNAME
+        value: "event-hub-backend.onrender.com"

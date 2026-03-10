@@ -1,15 +1,16 @@
 services:
+  # 1. Backend API Service
   - type: web
     name: event-hub-api
     env: node
     rootDir: backend
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: "5001"
+        value: "10000"
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
@@ -27,16 +28,15 @@ services:
       - key: MAX_FILE_SIZE
         value: "5242880"
 
+  # 2. Frontend Next.js Service
   - type: web
     name: event-hub
     env: node
     rootDir: frontend
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_BACKEND_URL
         value: "https://event-hub-api.onrender.com"
-      - key: API_HOSTNAME
-        value: "event-hub-api.onrender.com"

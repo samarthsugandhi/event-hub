@@ -10,7 +10,7 @@ let socket: Socket | null = null;
  */
 export const getSocket = (): Socket => {
   if (!socket) {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001';
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
     socket = io(backendUrl, {
       transports: ['websocket', 'polling'], // fallback to polling if ws fails
       autoConnect: true,

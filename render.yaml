@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: event-hub-backend
+    name: event-hub-api
     env: node
     rootDir: backend
     buildCommand: npm install && npm run build
@@ -17,7 +17,7 @@ services:
       - key: JWT_EXPIRE
         value: "7d"
       - key: CLIENT_URL
-        value: "https://event-hub-frontend.onrender.com"
+        value: "https://event-hub.onrender.com"
       - key: SMTP_USER
         sync: false
       - key: SMTP_PASS
@@ -28,7 +28,7 @@ services:
         value: "5242880"
 
   - type: web
-    name: event-hub-frontend
+    name: event-hub
     env: node
     rootDir: frontend
     buildCommand: npm install && npm run build
@@ -37,6 +37,6 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_BACKEND_URL
-        value: "https://event-hub-backend.onrender.com"
+        value: "https://event-hub-api.onrender.com"
       - key: API_HOSTNAME
-        value: "event-hub-backend.onrender.com"
+        value: "event-hub-api.onrender.com"

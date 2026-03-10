@@ -10,7 +10,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: process.env.API_HOSTNAME || 'bec-vortex-event-hub.onrender.com', // fallback
+        hostname: process.env.API_HOSTNAME || 'event-hub-api.onrender.com', // fallback
         pathname: '/uploads/**',
       },
       {

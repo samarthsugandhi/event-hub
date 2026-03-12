@@ -64,7 +64,7 @@ app.use('/api/bookmarks', bookmarkRoutes);
 app.use('/api/payments', paymentRoutes);
 
 // Health check
-app.get('/api/health', (_req, res) => {
+app.get('/api/health', (_req: express.Request, res: express.Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 

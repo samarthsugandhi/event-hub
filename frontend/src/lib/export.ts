@@ -141,7 +141,7 @@ function buildHTMLDocument(event: ExportEvent, rows: ExportRow[], total: number)
 <head><meta charset="utf-8"><title>${event.title} - Participants</title></head>
 <body style="font-family:Calibri,Arial,sans-serif;color:#1a1a1a;padding:40px;max-width:1200px;margin:0 auto">
   <div style="text-align:center;margin-bottom:30px">
-    <h1 style="color:#4f46e5;margin:0;font-size:24px">BEC Vortex Event Hub</h1>
+    <h1 style="color:#4f46e5;margin:0;font-size:24px">BEC Event Hub</h1>
     <p style="color:#666;margin:4px 0">Participant Report</p>
   </div>
 
@@ -234,7 +234,7 @@ function buildTextReport(event: ExportEvent, rows: ExportRow[], total: number): 
   const lines: string[] = [];
   const eventDate = new Date(event.date).toLocaleDateString('en-IN');
 
-  lines.push(`BEC VORTEX EVENT HUB - PARTICIPANT REPORT`);
+  lines.push(`BEC EVENT HUB - PARTICIPANT REPORT`);
   lines.push(`${'='.repeat(50)}`);
   lines.push(`Event: ${event.title}`);
   lines.push(`Date: ${eventDate} | Venue: ${event.venue}`);

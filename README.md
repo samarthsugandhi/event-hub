@@ -1,7 +1,7 @@
 # event-hub
-# 🎓 BEC Vortex – Event Hub
+# 🎓 BEC Event Hub
 
-Event Hub is a **centralized campus event discovery and participation platform** built as a module of **BEC Vortex**, a campus operating system designed to unify academic and administrative services.
+Event Hub is a **centralized campus event discovery and participation platform** built as a module of **BEC Event Hub**, a campus operating system designed to unify academic and administrative services.
 
 The platform transforms traditional event announcements into a **structured digital participation system** where students, faculty, and organizers can discover, register, and manage events efficiently.
 

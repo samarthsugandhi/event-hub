@@ -6,7 +6,7 @@ import ClientLayout from './client-layout';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'BEC Vortex — Event Hub',
+  title: 'BEC Event Hub',
   description: 'Centralized event discovery, registration, and attendance management platform',
 };
 

@@ -244,7 +244,7 @@ export default function RegisterPage() {
 
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs text-primary-400 font-mono">{registration.registrationId}</span>
-              <span className="text-xs text-gray-500 font-semibold">BEC Vortex</span>
+              <span className="text-xs text-gray-500 font-semibold">BEC Event Hub</span>
             </div>
 
             <h3 className="text-xl font-bold text-white mb-4">

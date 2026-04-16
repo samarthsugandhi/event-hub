@@ -19,7 +19,7 @@ function createIcon(color: string) {
       border: 3px solid white;
       border-radius: 50% 50% 50% 0;
       transform: rotate(-45deg);
-      box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 4px rgba(255,255,255,0.04);
     "><div style="
       width: 8px; height: 8px;
       background: white;
@@ -59,10 +59,11 @@ export default function MapView({ events, center }: MapViewProps) {
   return (
     <MapContainer
       center={center}
-      zoom={16}
+      zoom={17}
       style={{ height: '100%', width: '100%' }}
       scrollWheelZoom={true}
       zoomControl={true}
+      className="campus-map"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
@@ -78,7 +79,7 @@ export default function MapView({ events, center }: MapViewProps) {
             icon={createIcon(color)}
           >
             <Popup maxWidth={280} minWidth={220}>
-              <div style={{ fontFamily: 'system-ui, sans-serif' }}>
+              <div style={{ fontFamily: 'Inter, system-ui, sans-serif', minWidth: '220px' }}>
                 <div style={{
                   padding: '4px 8px',
                   borderRadius: '6px',
@@ -95,13 +96,13 @@ export default function MapView({ events, center }: MapViewProps) {
                 <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 4px', color: '#1e1a3a' }}>
                   {event.title}
                 </h3>
-                <p style={{ fontSize: '12px', color: '#6b7280', margin: '0 0 8px' }}>
+                <p style={{ fontSize: '12px', color: '#4b5563', margin: '0 0 8px' }}>
                   📍 {event.venue}
                 </p>
-                <div style={{ fontSize: '11px', color: '#6b7280', marginBottom: '4px' }}>
+                <div style={{ fontSize: '11px', color: '#4b5563', marginBottom: '4px' }}>
                   📅 {formatDate(event.date)} {event.time && `• ${event.time}`}
                 </div>
-                <div style={{ fontSize: '11px', color: '#6b7280', marginBottom: '8px' }}>
+                <div style={{ fontSize: '11px', color: '#4b5563', marginBottom: '8px' }}>
                   👥 {event.registrationCount}/{event.maxParticipants} registered
                   {isFull && (
                     <span style={{ color: '#ef4444', fontWeight: 600, marginLeft: '6px' }}>
@@ -119,7 +120,7 @@ export default function MapView({ events, center }: MapViewProps) {
                   style={{
                     display: 'block',
                     textAlign: 'center',
-                    background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+                    background: 'linear-gradient(135deg, #0ea5e9, #8b5cf6)',
                     color: 'white',
                     fontSize: '12px',
                     padding: '6px 12px',

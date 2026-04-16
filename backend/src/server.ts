@@ -86,7 +86,7 @@ const startServer = async () => {
     console.log(`
 ╔══════════════════════════════════════════════════╗
 ║                                                  ║
-║   🌀 BEC Vortex Event Hub API Server            ║
+║   🌀 BEC Event Hub API Server                   ║
 ║                                                  ║
 ║   Port: ${PORT}                                    ║
 ║   Mode: ${(process.env.NODE_ENV || 'development').padEnd(18)}         ║

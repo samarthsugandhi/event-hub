@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --vortex-dark: #05050f;
-  --vortex-deeper: #0a0818;
-  --vortex-mid: #1a1640;
-  --vortex-light: #1e1a3a;
-  --vortex-accent: #6366f1;
+  --vortex-dark: #040816;
+  --vortex-deeper: #071123;
+  --vortex-mid: #101a35;
+  --vortex-light: #162347;
+  --vortex-accent: #38bdf8;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(99, 102, 241, 0.3) transparent;
+  scrollbar-color: rgba(56, 189, 248, 0.35) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -24,7 +24,7 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: rgba(99, 102, 241, 0.3);
+  background-color: rgba(56, 189, 248, 0.35);
   border-radius: 3px;
 }
 
@@ -35,8 +35,9 @@ html {
 body {
   background: var(--vortex-dark);
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.08), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(139, 92, 246, 0.05), transparent);
+    radial-gradient(ellipse 70% 45% at 50% -20%, rgba(56, 189, 248, 0.12), transparent),
+    radial-gradient(ellipse 50% 40% at 0% 0%, rgba(192, 132, 252, 0.08), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(34, 211, 238, 0.06), transparent);
   color: #e2e8f0;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -45,13 +46,13 @@ body {
 
 /* Selection */
 ::selection {
-  background: rgba(99, 102, 241, 0.4);
+  background: rgba(56, 189, 248, 0.35);
   color: white;
 }
 
 /* Focus visible for accessibility */
 :focus-visible {
-  outline: 2px solid rgba(99, 102, 241, 0.5);
+  outline: 2px solid rgba(56, 189, 248, 0.55);
   outline-offset: 2px;
 }
 
@@ -80,13 +81,13 @@ body {
 
   .glass-card-hover:hover {
     transform: translateY(-4px);
-    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.1), 0 4px 30px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 24px 70px rgba(56, 189, 248, 0.12), 0 4px 30px rgba(0, 0, 0, 0.42);
   }
 
   /* Text styles */
   .gradient-text {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #818cf8 100%);
+    background-image: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 45%, #c084fc 80%, #38bdf8 100%);
     background-size: 200% auto;
     animation: shimmer 3s linear infinite;
   }
@@ -101,12 +102,12 @@ body {
     @apply px-6 py-3 font-semibold rounded-xl text-white text-sm
     transition-all duration-300 ease-out
     active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+    box-shadow: 0 10px 28px rgba(56, 189, 248, 0.24);
   }
   .btn-primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+    background: linear-gradient(135deg, #38bdf8, #a855f7);
+    box-shadow: 0 14px 34px rgba(56, 189, 248, 0.32);
     transform: translateY(-1px);
   }
 
@@ -134,8 +135,8 @@ body {
   }
   .input-field:focus {
     outline: none;
-    border-color: rgba(99, 102, 241, 0.5);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    border-color: rgba(56, 189, 248, 0.55);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
     background: rgba(255, 255, 255, 0.06);
   }
   .input-field option {
@@ -190,6 +191,24 @@ body {
   .skeleton {
     @apply bg-white/[0.06] rounded-lg animate-pulse;
   }
+
+  .aurora-border {
+    position: relative;
+  }
+
+  .aurora-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.6), rgba(168, 85, 247, 0.48), rgba(34, 211, 238, 0.34));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+  }
 }
 
 /* Animations */
@@ -202,6 +221,15 @@ body {
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient-shift 8s ease infinite;
+}
+
+@keyframes glow-breath {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.88; transform: scale(1.03); }
+}
+
+.animate-glow-breath {
+  animation: glow-breath 6s ease-in-out infinite;
 }
 
 @keyframes fade-in {

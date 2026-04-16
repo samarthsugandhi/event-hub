@@ -38,7 +38,7 @@ export default function FeaturedBanner({ events }: FeaturedBannerProps) {
       <AnimatedBackground className="opacity-40" />
 
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-vortex-dark/90 via-vortex-dark/60 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#040816]/92 via-[#071123]/65 to-transparent" />
 
       {/* Content */}
       <div className="relative z-10 h-full flex items-center p-8 md:p-12">
@@ -48,13 +48,13 @@ export default function FeaturedBanner({ events }: FeaturedBannerProps) {
               {CATEGORY_LABELS[event.category]}
             </span>
             {live && (
-              <span className="badge-live text-xs">
-                <span className="w-1.5 h-1.5 bg-red-400 rounded-full mr-1.5" />
+                <span className="badge-live text-xs shadow-[0_0_22px_rgba(248,113,113,0.18)]">
+                <span className="w-1.5 h-1.5 bg-red-400 rounded-full mr-1.5 animate-pulse" />
                 LIVE NOW
               </span>
             )}
             {event.featured && (
-              <span className="badge bg-primary-500/20 text-primary-300 border-primary-500/30 text-xs">
+              <span className="badge bg-cyan-500/15 text-cyan-200 border-cyan-400/30 text-xs">
                 ⭐ Featured
               </span>
             )}

@@ -11,7 +11,7 @@ export default function Footer() {
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center shadow-lg shadow-primary-500/20">
                 <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="text-lg font-bold gradient-text">BEC Vortex</span>
+              <span className="text-lg font-bold gradient-text">BEC Event Hub</span>
             </div>
             <p className="text-gray-500 text-sm max-w-md leading-relaxed mb-4">
               The centralized event discovery, registration, and attendance management platform
@@ -51,7 +51,7 @@ export default function Footer() {
         </div>
         <div className="border-t border-white/[0.06] mt-8 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-600">
-            © {new Date().getFullYear()} BEC Vortex Event Hub • Basaveshwar Engineering College, Bagalkote
+            © {new Date().getFullYear()} BEC Event Hub • Basaveshwar Engineering College, Bagalkote
           </p>
           <p className="text-xs text-gray-700">
             Built with ❤️ for BEC Campus

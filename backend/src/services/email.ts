@@ -38,13 +38,13 @@ export const sendEventPassEmail = async (
   const qrImageBuffer = Buffer.from(qrCode.split(',')[1] || '', 'base64');
 
   const mailOptions = {
-    from: `"BEC Vortex Event Hub" <${process.env.SMTP_USER}>`,
+    from: `"BEC Event Hub" <${process.env.SMTP_USER}>`,
     to,
     subject: `🎫 Event Pass - ${eventTitle}`,
     html: `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); color: white; border-radius: 16px; overflow: hidden;">
         <div style="padding: 40px 30px; text-align: center;">
-          <h1 style="margin: 0; font-size: 28px; background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">BEC Vortex</h1>
+          <h1 style="margin: 0; font-size: 28px; background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">BEC Event Hub</h1>
           <p style="color: #a5b4fc; font-size: 14px; margin-top: 4px;">Event Hub Pass</p>
         </div>
         <div style="background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); margin: 0 20px; border-radius: 16px; padding: 30px; border: 1px solid rgba(255,255,255,0.1);">
@@ -73,7 +73,7 @@ export const sendEventPassEmail = async (
           <p style="text-align: center; color: #94a3b8; font-size: 12px; margin-top: 16px;">Present this QR code at the event venue for entry</p>
         </div>
         <div style="text-align: center; padding: 24px; color: #64748b; font-size: 12px;">
-          <p>BEC Vortex Event Hub — Your Campus, Your Events</p>
+          <p>BEC Event Hub — Your Campus, Your Events</p>
         </div>
       </div>
     `,
@@ -106,12 +106,12 @@ export const sendEventNotificationEmail = async (
   message: string
 ): Promise<void> => {
   const mailOptions = {
-    from: `"BEC Vortex Event Hub" <${process.env.SMTP_USER}>`,
+    from: `"BEC Event Hub" <${process.env.SMTP_USER}>`,
     to,
     subject: `📢 ${eventTitle} — Event Update`,
     html: `
       <div style="font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; background: #0f172a; color: white; padding: 40px; border-radius: 16px;">
-        <h1 style="color: #a78bfa;">BEC Vortex</h1>
+        <h1 style="color: #a78bfa;">BEC Event Hub</h1>
         <h2 style="color: #e2e8f0;">${eventTitle}</h2>
         <p style="color: #cbd5e1; line-height: 1.6;">${message}</p>
         <a href="${process.env.CLIENT_URL}/events" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">View Events</a>

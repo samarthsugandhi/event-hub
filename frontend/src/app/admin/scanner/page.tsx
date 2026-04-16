@@ -21,6 +21,11 @@ interface VerificationResult {
   };
 }
 
+interface QRPayload {
+  registrationId?: string;
+  eventId?: string;
+}
+
 export default function ScannerPage() {
   const { user } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
@@ -30,7 +35,9 @@ export default function ScannerPage() {
   const [result, setResult] = useState<VerificationResult | null>(null);
   const [verifying, setVerifying] = useState(false);
   const [recentScans, setRecentScans] = useState<VerificationResult[]>([]);
+  const [scannerReady, setScannerReady] = useState(false);
   const scannerRef = useRef<any>(null);
+  const scanLockRef = useRef(false);
 
   useEffect(() => {
     loadEvents();
@@ -64,6 +71,9 @@ export default function ScannerPage() {
         await scannerRef.current.clear();
       }
 
+      setScannerReady(false);
+      scanLockRef.current = false;
+
       const scanner = new Html5QrcodeScanner('qr-reader', {
         fps: 10,
         qrbox: { width: 250, height: 250 },
@@ -80,6 +90,7 @@ export default function ScannerPage() {
       );
 
       scannerRef.current = scanner;
+      setScannerReady(true);
     } catch (err) {
       console.error('Scanner init error:', err);
       toast.error('Failed to initialize camera');
@@ -87,16 +98,46 @@ export default function ScannerPage() {
   };
 
   const handleQRScan = async (data: string) => {
+    if (scanLockRef.current) return;
+
     try {
-      const parsed = JSON.parse(data);
-      await verifyRegistration(parsed.registrationId);
+      scanLockRef.current = true;
+
+      let parsed: QRPayload | null = null;
+      try {
+        parsed = JSON.parse(data);
+      } catch {
+        parsed = { registrationId: data.trim() };
+      }
+
+      const registrationId = parsed?.registrationId?.trim();
+      const eventId = parsed?.eventId?.trim();
+
+      if (!registrationId) {
+        toast.error('QR code does not include a registration ID');
+        return;
+      }
+
+      if (eventId && eventId !== selectedEvent) {
+        setSelectedEvent(eventId);
+        await verifyRegistration(registrationId, eventId);
+        return;
+      }
+
+      await verifyRegistration(registrationId, eventId || selectedEvent);
     } catch {
       toast.error('Invalid QR code format');
+    } finally {
+      setTimeout(() => {
+        scanLockRef.current = false;
+      }, 1200);
     }
   };
 
-  const verifyRegistration = async (registrationId: string) => {
-    if (!selectedEvent) {
+  const verifyRegistration = async (registrationId: string, eventOverride?: string) => {
+    const eventId = eventOverride || selectedEvent;
+
+    if (!eventId) {
       toast.error('Please select an event first');
       return;
     }
@@ -107,7 +148,7 @@ export default function ScannerPage() {
     try {
       const res = await api.registrations.verify({
         registrationId,
-        eventId: selectedEvent,
+        eventId,
       });
 
       const verResult: VerificationResult = {
@@ -171,6 +212,9 @@ export default function ScannerPage() {
             <option key={e._id} value={e._id}>{e.title}</option>
           ))}
         </select>
+        <p className="text-xs text-slate-500 mt-3 leading-relaxed">
+          Tip: if the QR contains an eventId, the scanner will auto-detect the correct event.
+        </p>
       </div>
 
       {selectedEvent && (
@@ -182,7 +226,7 @@ export default function ScannerPage() {
               <button
                 onClick={() => setMode('camera')}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                  mode === 'camera' ? 'bg-primary-600 text-white' : 'glass text-gray-400'
+                  mode === 'camera' ? 'bg-gradient-to-r from-cyan-500 to-violet-500 text-white' : 'glass text-gray-400'
                 }`}
               >
                 <Camera className="w-4 h-4" /> Camera Scan
@@ -190,7 +234,7 @@ export default function ScannerPage() {
               <button
                 onClick={() => setMode('manual')}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                  mode === 'manual' ? 'bg-primary-600 text-white' : 'glass text-gray-400'
+                  mode === 'manual' ? 'bg-gradient-to-r from-cyan-500 to-violet-500 text-white' : 'glass text-gray-400'
                 }`}
               >
                 <Keyboard className="w-4 h-4" /> Manual Entry
@@ -199,9 +243,9 @@ export default function ScannerPage() {
 
             {mode === 'camera' ? (
               <div>
-                <div id="qr-reader" className="rounded-xl overflow-hidden" />
+                <div id="qr-reader" className="rounded-xl overflow-hidden aurora-border bg-black/20" />
                 <p className="text-center text-xs text-gray-500 mt-3">
-                  Point camera at the participant&apos;s QR code
+                  {scannerReady ? 'Point camera at the participant&apos;s QR code' : 'Starting camera scanner...'}
                 </p>
               </div>
             ) : (

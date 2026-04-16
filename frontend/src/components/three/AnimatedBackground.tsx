@@ -39,7 +39,7 @@ export default function AnimatedBackground({
         vy: (Math.random() - 0.5) * 0.3,
         size: Math.random() * 2 + 0.5,
         opacity: Math.random() * 0.5 + 0.1,
-        hue: 240 + Math.random() * 60,
+        hue: 195 + Math.random() * 75,
       });
     }
 
@@ -71,7 +71,7 @@ export default function AnimatedBackground({
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(99, 102, 241, ${0.08 * (1 - dist / 120)})`;
+            ctx.strokeStyle = `rgba(56, 189, 248, ${0.08 * (1 - dist / 120)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -106,8 +106,8 @@ export default function AnimatedBackground({
         style={{ background: 'transparent' }}
       />
       {/* Ambient gradient orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/[0.03] rounded-full blur-[100px] animate-pulse-slow" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/[0.04] rounded-full blur-[80px] animate-pulse-slow" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-400/[0.05] rounded-full blur-[100px] animate-glow-breath" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-violet-500/[0.05] rounded-full blur-[80px] animate-glow-breath" style={{ animationDelay: '1s' }} />
     </div>
   );
 }

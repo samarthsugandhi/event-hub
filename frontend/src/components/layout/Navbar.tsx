@@ -86,7 +86,7 @@ export default function Navbar() {
                 <Zap className="w-5 h-5 text-white" />
               </div>
               <div className="hidden sm:block">
-                <span className="text-lg font-bold gradient-text">BEC Vortex</span>
+                <span className="text-lg font-bold gradient-text">BEC Event Hub</span>
               </div>
             </Link>
 

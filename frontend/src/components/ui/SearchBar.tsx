@@ -22,7 +22,7 @@ export default function SearchBar({
   return (
     <form onSubmit={handleSubmit} className="relative w-full max-w-2xl mx-auto">
       <div className="relative group">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-primary-400 transition-colors" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-cyan-300 transition-colors" />
         <input
           type="text"
           value={query}
@@ -31,9 +31,9 @@ export default function SearchBar({
             if (e.target.value === '') onSearch('');
           }}
           placeholder={placeholder}
-          className="w-full pl-12 pr-12 py-4 glass rounded-2xl text-white placeholder-gray-500 
-            focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500/50
-            transition-all duration-300 text-sm"
+          className="w-full pl-12 pr-12 py-4 glass rounded-2xl text-white placeholder-slate-500 
+            focus:outline-none focus:ring-2 focus:ring-cyan-400/25 focus:border-cyan-400/40
+            transition-all duration-300 text-sm aurora-border"
         />
         {query && (
           <button
@@ -44,12 +44,12 @@ export default function SearchBar({
             }}
             className="absolute right-14 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-white/10"
           >
-            <X className="w-4 h-4 text-gray-500" />
+            <X className="w-4 h-4 text-slate-500" />
           </button>
         )}
         <button
           type="submit"
-          className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-primary-600 hover:bg-primary-500 rounded-xl text-white text-sm font-medium transition-colors"
+          className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 rounded-xl text-white text-sm font-medium transition-colors bg-gradient-to-r from-cyan-500 to-violet-500 hover:from-cyan-400 hover:to-violet-400 shadow-lg shadow-cyan-500/20"
         >
           Search
         </button>

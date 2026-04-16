@@ -96,7 +96,7 @@ export default function LoginPage() {
           year: form.year || undefined,
           usn: form.usn ? form.usn.toUpperCase().trim() : undefined,
         });
-        toast.success('Account created! Welcome to BEC Vortex 🚀');
+        toast.success('Account created! Welcome to BEC Event Hub 🚀');
         router.push('/');
       }
     } catch (err: any) {
@@ -119,7 +119,7 @@ export default function LoginPage() {
             <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center shadow-lg shadow-primary-500/25">
               <Zap className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold gradient-text">BEC Vortex</span>
+            <span className="text-2xl font-bold gradient-text">BEC Event Hub</span>
           </div>
           <h1 className="text-xl font-medium text-gray-300">
             {mode === 'login' ? 'Sign in to your account' : 'Create your account'}

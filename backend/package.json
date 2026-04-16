@@ -1,7 +1,7 @@
 {
   "name": "bec-vortex-event-hub-backend",
   "version": "1.0.0",
-  "description": "BEC Vortex Event Hub - Backend API Server",
+  "description": "BEC Event Hub - Backend API Server",
   "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",

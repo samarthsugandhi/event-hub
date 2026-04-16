@@ -424,6 +424,29 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+
+      {/* Utility Hub */}
+      <div className="glass-card">
+        <h2 className="text-xl font-semibold text-white mb-6">My Utility Hub</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Link href="/profile" className="soft-panel p-4 hover:bg-white/[0.04] transition-colors">
+            <p className="text-sm font-medium text-white">Pass Wallet</p>
+            <p className="text-xs text-[#AFAFAF] mt-1">All active passes and QR access</p>
+          </Link>
+          <Link href="/profile" className="soft-panel p-4 hover:bg-white/[0.04] transition-colors">
+            <p className="text-sm font-medium text-white">Payment History</p>
+            <p className="text-xs text-[#AFAFAF] mt-1">Track completed and pending payments</p>
+          </Link>
+          <Link href="/profile" className="soft-panel p-4 hover:bg-white/[0.04] transition-colors">
+            <p className="text-sm font-medium text-white">Attendance History</p>
+            <p className="text-xs text-[#AFAFAF] mt-1">Events attended and participation streak</p>
+          </Link>
+          <Link href="/profile/certificates" className="soft-panel p-4 hover:bg-white/[0.04] transition-colors">
+            <p className="text-sm font-medium text-white">Certificates</p>
+            <p className="text-xs text-[#AFAFAF] mt-1">View and download issued certificates</p>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

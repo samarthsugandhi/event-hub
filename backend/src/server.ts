@@ -22,6 +22,8 @@ import analyticsRoutes from './routes/analytics';
 import notificationRoutes from './routes/notifications';
 import bookmarkRoutes from './routes/bookmarks';
 import paymentRoutes from './routes/payments';
+import savedFiltersRoutes from './routes/saved-filters';
+import certificatesRoutes from './routes/certificates';
 import { startReminderService } from './services/reminder';
 
 const app = express();
@@ -62,6 +64,9 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/user/saved-filters', savedFiltersRoutes);
+app.use('/api/certificates', certificatesRoutes);
+app.use('/api/user/certificates', certificatesRoutes);
 
 // Health check
 app.get('/api/health', (_req: express.Request, res: express.Response) => {

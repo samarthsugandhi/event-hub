@@ -29,6 +29,7 @@ function SubmitEventInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get('edit');
+  const duplicateId = searchParams.get('duplicate');
   const isEditMode = !!editId;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loadingEvent, setLoadingEvent] = useState(false);
@@ -65,17 +66,18 @@ function SubmitEventInner() {
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Load event data in edit mode
+  // Load event data in edit/duplicate mode
   useEffect(() => {
-    if (editId) {
+    const sourceId = editId || duplicateId;
+    if (sourceId) {
       setLoadingEvent(true);
-      api.events.get(editId)
+      api.events.get(sourceId)
         .then((res: any) => {
           const e = res.data;
           const dateObj = e.date ? new Date(e.date) : null;
           const endDateObj = e.endDate ? new Date(e.endDate) : null;
           setForm({
-            title: e.title || '',
+            title: duplicateId ? `${e.title} (Copy)` : (e.title || ''),
             description: e.description || '',
             category: e.category || 'technical',
             date: dateObj ? dateObj.toISOString().split('T')[0] : '',
@@ -104,7 +106,7 @@ function SubmitEventInner() {
             minTeamSize: e.minTeamSize?.toString() || '2',
             maxTeamSize: e.maxTeamSize?.toString() || '4',
           });
-          if (e.poster) {
+          if (e.poster && !duplicateId) {
             setPosterPreview(e.poster);
           }
         })
@@ -114,7 +116,7 @@ function SubmitEventInner() {
         })
         .finally(() => setLoadingEvent(false));
     }
-  }, [editId]);
+  }, [editId, duplicateId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -258,11 +260,13 @@ function SubmitEventInner() {
       </Link>
 
       <h1 className="text-3xl font-bold text-white mb-2">
-        {isEditMode ? 'Edit Event' : 'Submit New Event'}
+        {isEditMode ? 'Edit Event' : duplicateId ? 'Duplicate Event' : 'Submit New Event'}
       </h1>
       <p className="text-gray-400 mb-8">
         {isEditMode
           ? 'Update the event details below.'
+          : duplicateId
+            ? 'Review and publish this copied draft as a new event.'
           : user?.role === 'admin'
             ? 'Create an event. It will be published immediately.'
             : 'Fill in the details below. Your event will be reviewed by an admin before publishing.'}

@@ -66,6 +66,23 @@ export default function NotificationsPage() {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
+  const getAction = (n: Notification) => {
+    const eventId = typeof n.eventId === 'object' ? (n.eventId as any)?._id : n.eventId;
+    if (n.type === 'payment_pending') {
+      const regMatch = n.message.match(/REG-[A-Z0-9-]+/i);
+      if (regMatch?.[0]) {
+        return { href: `/payment/${regMatch[0]}`, label: 'Complete payment' };
+      }
+    }
+    if (n.type === 'registration_confirmed' && eventId) {
+      return { href: `/register/${eventId}`, label: 'Open pass' };
+    }
+    if (eventId) {
+      return { href: `/events/${eventId}`, label: 'View event' };
+    }
+    return null;
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -110,6 +127,7 @@ export default function NotificationsPage() {
         <div className="space-y-3">
           {notifications.map((notification) => {
             const Icon = ICON_MAP[notification.type] || Bell;
+            const action = getAction(notification);
             return (
               <div
                 key={notification._id}
@@ -132,6 +150,15 @@ export default function NotificationsPage() {
                     {notification.title}
                   </h3>
                   <p className="text-sm text-gray-500 mt-0.5">{notification.message}</p>
+                  {action && (
+                    <Link
+                      href={action.href}
+                      onClick={(e) => e.stopPropagation()}
+                      className="mt-2 inline-flex items-center text-xs font-medium text-primary-300 hover:text-primary-200"
+                    >
+                      {action.label}
+                    </Link>
+                  )}
                   <p className="text-xs text-gray-600 mt-2">{formatDate(notification.createdAt)}</p>
                 </div>
                 {!notification.read && (

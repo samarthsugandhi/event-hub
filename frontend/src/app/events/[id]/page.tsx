@@ -42,6 +42,22 @@ export default function EventDetailPage() {
     }
   }, [event, user]);
 
+  useEffect(() => {
+    if (!event) return;
+    try {
+      const key = 'bec-recent-events';
+      const existing = JSON.parse(localStorage.getItem(key) || '[]') as Event[];
+      const trimmedEvent: Event = {
+        ...event,
+        description: (event.description || '').slice(0, 180),
+      };
+      const deduped = [trimmedEvent, ...existing.filter((e) => e._id !== event._id)].slice(0, 8);
+      localStorage.setItem(key, JSON.stringify(deduped));
+    } catch {
+      // no-op
+    }
+  }, [event]);
+
   const loadEvent = async (id: string) => {
     try {
       // If id looks like a MongoDB ObjectId use direct lookup, otherwise try slug

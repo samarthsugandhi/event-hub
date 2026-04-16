@@ -34,6 +34,7 @@ export default function RegisterPage() {
     teamName: '',
   });
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
 
   // Check if viewing an existing pass
   const passId = searchParams.get('pass');
@@ -41,6 +42,21 @@ export default function RegisterPage() {
   useEffect(() => {
     if (params.eventId) loadEvent(params.eventId as string);
   }, [params.eventId]);
+
+  useEffect(() => {
+    if (!params.eventId || passId) return;
+    const key = `bec-register-draft-${params.eventId as string}`;
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (parsed.form) setForm((prev) => ({ ...prev, ...parsed.form }));
+      if (Array.isArray(parsed.teamMembers)) setTeamMembers(parsed.teamMembers);
+      if ([1, 2, 3].includes(parsed.step)) setStep(parsed.step);
+    } catch {
+      // ignore broken draft
+    }
+  }, [params.eventId, passId]);
 
   useEffect(() => {
     if (passId) {
@@ -61,6 +77,17 @@ export default function RegisterPage() {
       }));
     }
   }, [user]);
+
+  useEffect(() => {
+    if (!params.eventId || passId || registration) return;
+    const key = `bec-register-draft-${params.eventId as string}`;
+    const payload = { form, teamMembers, step, savedAt: new Date().toISOString() };
+    try {
+      localStorage.setItem(key, JSON.stringify(payload));
+    } catch {
+      // ignore quota/storage issues
+    }
+  }, [form, teamMembers, step, params.eventId, passId, registration]);
 
   const loadEvent = async (id: string) => {
     try {
@@ -189,12 +216,42 @@ export default function RegisterPage() {
       }
 
       setRegistration(reg);
+      if (params.eventId) {
+        localStorage.removeItem(`bec-register-draft-${params.eventId as string}`);
+      }
       toast.success('Registration successful! Your event pass is ready. 🎫');
     } catch (err: any) {
       toast.error(err.message || 'Registration failed');
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const validateStep = (targetStep: 1 | 2 | 3) => {
+    if (targetStep === 2) {
+      if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !form.department || !form.year || !form.usn) {
+        toast.error('Please complete all participant details before continuing.');
+        return false;
+      }
+      if (usnError) {
+        toast.error('Please fix USN/CSN format before continuing.');
+        return false;
+      }
+    }
+
+    if (targetStep === 3 && event?.participationType === 'team') {
+      if (!form.teamName.trim()) {
+        toast.error('Please provide a team name before review.');
+        return false;
+      }
+      const totalSize = 1 + teamMembers.length;
+      if (totalSize < (event.minTeamSize || 2)) {
+        toast.error(`Add at least ${event.minTeamSize} total members before review.`);
+        return false;
+      }
+    }
+
+    return true;
   };
 
   const handleDownloadPass = () => {
@@ -384,221 +441,209 @@ export default function RegisterPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Team leader / individual info */}
-          <div>
-            <label className="text-sm text-gray-400 mb-1.5 block">
-              {isTeamEvent ? 'Team Leader Name' : 'Full Name'} <span className="text-red-400">*</span>
-            </label>
-            <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input
-                type="text"
-                required
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="input-field pl-11"
-                placeholder="Enter your full name"
-              />
-            </div>
+          <div className="grid grid-cols-3 gap-2 rounded-xl bg-black/25 p-1.5 border border-white/[0.08]">
+            {[
+              { id: 1, label: 'Participant' },
+              { id: 2, label: isTeamEvent ? 'Team' : 'Details' },
+              { id: 3, label: 'Review' },
+            ].map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setStep(item.id as 1 | 2 | 3)}
+                className={`rounded-lg px-3 py-2 text-sm transition-all ${step === item.id ? 'bg-primary-500/25 text-white border border-primary-500/35' : 'text-[#B0B0B0] hover:text-white'}`}
+              >
+                {item.id}. {item.label}
+              </button>
+            ))}
           </div>
 
-          <div>
-            <label className="text-sm text-gray-400 mb-1.5 block">Email <span className="text-red-400">*</span></label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input
-                type="email"
-                required
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="input-field pl-11"
-                placeholder="your@email.com"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="text-sm text-gray-400 mb-1.5 block">Phone <span className="text-red-400">*</span></label>
-            <div className="relative">
-              <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input
-                type="tel"
-                required
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="input-field pl-11"
-                placeholder="+91 98765 43210"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm text-gray-400 mb-1.5 block">Department <span className="text-red-400">*</span></label>
-              <div className="relative">
-                <Building className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <select
-                  required
-                  value={form.department}
-                  onChange={(e) => setForm({ ...form, department: e.target.value })}
-                  className="input-field pl-11 appearance-none"
-                >
-                  <option value="">Select</option>
-                  <option value="Computer Science">Computer Science</option>
-                  <option value="Information Science">Information Science</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Electrical">Electrical</option>
-                  <option value="Mechanical">Mechanical</option>
-                  <option value="Civil">Civil</option>
-                  <option value="Other">Other</option>
-                </select>
+          {step === 1 && (
+            <>
+              <div>
+                <label className="text-sm text-gray-400 mb-1.5 block">
+                  {isTeamEvent ? 'Team Leader Name' : 'Full Name'} <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <input type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="input-field pl-11" placeholder="Enter your full name" />
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="text-sm text-gray-400 mb-1.5 block">Year <span className="text-red-400">*</span></label>
-              <div className="relative">
-                <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <select
-                  required
-                  value={form.year}
-                  onChange={(e) => {
-                    setForm({ ...form, year: e.target.value, usn: '' });
-                    setUsnError('');
-                  }}
-                  className="input-field pl-11 appearance-none"
-                >
-                  <option value="">Select</option>
-                  <option value="1st">1st Year</option>
-                  <option value="2nd">2nd Year</option>
-                  <option value="3rd">3rd Year</option>
-                  <option value="4th">4th Year</option>
-                </select>
+
+              <div>
+                <label className="text-sm text-gray-400 mb-1.5 block">Email <span className="text-red-400">*</span></label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="input-field pl-11" placeholder="your@email.com" />
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div>
-            <label className="text-sm text-gray-400 mb-1.5 block">
-              {form.year === '1st' ? 'CSN (College Serial Number)' : 'USN (University Seat Number)'} <span className="text-red-400">*</span>
-            </label>
-            <div className="relative">
-              <Hash className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input
-                type="text"
-                required
-                value={form.usn}
-                onChange={(e) => handleUSNChange(e.target.value)}
-                className={`input-field pl-11 uppercase ${usnError ? 'border-red-500/50 focus:ring-red-500/30' : ''}`}
-                placeholder={form.year === '1st' ? '2025XXXXXX (e.g., 2025010590)' : '2BAXXXXXXX (e.g., 2BA23IS080)'}
-              />
-            </div>
-            {usnError ? (
-              <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" /> {usnError}
-              </p>
-            ) : (
-              <p className="text-[11px] text-gray-600 mt-1">
-                {form.year === '1st'
-                  ? 'CSN format: Year prefix (2025) + 6 digit serial number'
-                  : 'USN format: 2BA + admission year + branch code + roll number'}
-              </p>
-            )}
-          </div>
+              <div>
+                <label className="text-sm text-gray-400 mb-1.5 block">Phone <span className="text-red-400">*</span></label>
+                <div className="relative">
+                  <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <input type="tel" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="input-field pl-11" placeholder="+91 98765 43210" />
+                </div>
+              </div>
 
-          {/* Team Section */}
-          {isTeamEvent && (
-            <div className="space-y-4 pt-4 border-t border-white/[0.06]">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm text-gray-400 mb-1.5 block">Department <span className="text-red-400">*</span></label>
+                  <div className="relative">
+                    <Building className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <select required value={form.department} onChange={(e) => setForm({ ...form, department: e.target.value })} className="input-field pl-11 appearance-none">
+                      <option value="">Select</option>
+                      <option value="Computer Science">Computer Science</option>
+                      <option value="Information Science">Information Science</option>
+                      <option value="Electronics">Electronics</option>
+                      <option value="Electrical">Electrical</option>
+                      <option value="Mechanical">Mechanical</option>
+                      <option value="Civil">Civil</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-400 mb-1.5 block">Year <span className="text-red-400">*</span></label>
+                  <div className="relative">
+                    <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <select required value={form.year} onChange={(e) => { setForm({ ...form, year: e.target.value, usn: '' }); setUsnError(''); }} className="input-field pl-11 appearance-none">
+                      <option value="">Select</option>
+                      <option value="1st">1st Year</option>
+                      <option value="2nd">2nd Year</option>
+                      <option value="3rd">3rd Year</option>
+                      <option value="4th">4th Year</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-400 mb-1.5 block">
+                  {form.year === '1st' ? 'CSN (College Serial Number)' : 'USN (University Seat Number)'} <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
+                  <Hash className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <input
+                    type="text"
+                    required
+                    value={form.usn}
+                    onChange={(e) => handleUSNChange(e.target.value)}
+                    className={`input-field pl-11 uppercase ${usnError ? 'border-red-500/50 focus:ring-red-500/30' : ''}`}
+                    placeholder={form.year === '1st' ? '2025XXXXXX (e.g., 2025010590)' : '2BAXXXXXXX (e.g., 2BA23IS080)'}
+                  />
+                </div>
+                {usnError ? (
+                  <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> {usnError}
+                  </p>
+                ) : (
+                  <p className="text-[11px] text-gray-600 mt-1">
+                    {form.year === '1st'
+                      ? 'CSN format: Year prefix (2025) + 6 digit serial number'
+                      : 'USN format: 2BA + admission year + branch code + roll number'}
+                  </p>
+                )}
+              </div>
+            </>
+          )}
+
+          {step === 2 && isTeamEvent && (
+            <div className="space-y-4 pt-2">
               <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                 <UsersRound className="w-5 h-5 text-[#C6A75E]" /> Team Details
               </h3>
 
               <div>
                 <label className="text-sm text-gray-400 mb-1.5 block">Team Name <span className="text-red-400">*</span></label>
-                <input
-                  type="text"
-                  required
-                  value={form.teamName}
-                  onChange={(e) => setForm({ ...form, teamName: e.target.value })}
-                  className="input-field"
-                  placeholder="e.g. Code Crusaders"
-                />
+                <input type="text" required value={form.teamName} onChange={(e) => setForm({ ...form, teamName: e.target.value })} className="input-field" placeholder="e.g. Code Crusaders" />
               </div>
 
-              <p className="text-xs text-gray-500">
-                You are the team leader. Add {event.minTeamSize - 1}–{event.maxTeamSize - 1} more members below.
-              </p>
+              <p className="text-xs text-gray-500">You are the team leader. Add {event.minTeamSize - 1}–{event.maxTeamSize - 1} more members below.</p>
 
               {teamMembers.map((member, i) => (
                 <div key={i} className="glass rounded-xl p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-300">Member {i + 1}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeTeamMember(i)}
-                      className="p-1 rounded hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors"
-                    >
+                    <button type="button" onClick={() => removeTeamMember(i)} className="p-1 rounded hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
-                    <input
-                      type="text"
-                      placeholder="Name *"
-                      value={member.name}
-                      onChange={(e) => updateTeamMember(i, 'name', e.target.value)}
-                      className="input-field text-sm"
-                      required
-                    />
-                    <input
-                      type="email"
-                      placeholder="Email"
-                      value={member.email}
-                      onChange={(e) => updateTeamMember(i, 'email', e.target.value)}
-                      className="input-field text-sm"
-                    />
-                    <input
-                      type="text"
-                      placeholder="USN *"
-                      value={member.usn}
-                      onChange={(e) => updateTeamMember(i, 'usn', e.target.value)}
-                      className="input-field text-sm uppercase"
-                      required
-                    />
+                    <input type="text" placeholder="Name *" value={member.name} onChange={(e) => updateTeamMember(i, 'name', e.target.value)} className="input-field text-sm" required />
+                    <input type="email" placeholder="Email" value={member.email} onChange={(e) => updateTeamMember(i, 'email', e.target.value)} className="input-field text-sm" />
+                    <input type="text" placeholder="USN *" value={member.usn} onChange={(e) => updateTeamMember(i, 'usn', e.target.value)} className="input-field text-sm uppercase" required />
                   </div>
                 </div>
               ))}
 
               {teamMembers.length < (event.maxTeamSize || 4) - 1 && (
-                <button
-                  type="button"
-                  onClick={addTeamMember}
-                  className="btn-secondary w-full flex items-center justify-center gap-2 text-sm"
-                >
+                <button type="button" onClick={addTeamMember} className="btn-secondary w-full flex items-center justify-center gap-2 text-sm">
                   <Plus className="w-4 h-4" /> Add Team Member
                 </button>
               )}
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={submitting || !!usnError}
-            className="btn-primary w-full flex items-center justify-center gap-2 !mt-8"
-          >
-            {submitting ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                {event?.pricingType === 'paid' ? 'Registering & Redirecting to Payment...' : 'Registering...'}
-              </>
-            ) : (
-              <>
-                <QrCode className="w-4 h-4" />
-                {event?.pricingType === 'paid'
-                  ? `Register & Pay ₹${event.price}`
-                  : 'Register & Get Event Pass'}
-              </>
+          {step === 2 && !isTeamEvent && (
+            <div className="soft-panel p-5">
+              <p className="text-sm text-[#D0D0D0]">You are registering as an individual participant. Continue to review and submit.</p>
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className="space-y-4">
+              <div className="soft-panel p-5 text-sm text-[#D0D0D0]">
+                <p className="text-white font-medium mb-3">Review your details</p>
+                <p><span className="text-[#B0B0B0]">Name:</span> {form.name}</p>
+                <p><span className="text-[#B0B0B0]">Email:</span> {form.email}</p>
+                <p><span className="text-[#B0B0B0]">Department:</span> {form.department}</p>
+                <p><span className="text-[#B0B0B0]">Year:</span> {form.year}</p>
+                {isTeamEvent && <p><span className="text-[#B0B0B0]">Team:</span> {form.teamName || 'Not set'}</p>}
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting || !!usnError}
+                className="btn-primary w-full flex items-center justify-center gap-2"
+              >
+                {submitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    {event?.pricingType === 'paid' ? 'Registering & Redirecting to Payment...' : 'Registering...'}
+                  </>
+                ) : (
+                  <>
+                    <QrCode className="w-4 h-4" />
+                    {event?.pricingType === 'paid' ? `Register & Pay ₹${event.price}` : 'Register & Get Event Pass'}
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between pt-2">
+            <button
+              type="button"
+              onClick={() => setStep((s) => (Math.max(1, s - 1) as 1 | 2 | 3))}
+              className="btn-ghost"
+              disabled={step === 1}
+            >
+              Back
+            </button>
+            {step < 3 && (
+              <button
+                type="button"
+                onClick={() => {
+                  const next = (step + 1) as 1 | 2 | 3;
+                  if (validateStep(next)) setStep(next);
+                }}
+                className="btn-secondary"
+              >
+                Continue
+              </button>
             )}
-          </button>
+          </div>
         </form>
       </div>
     </div>

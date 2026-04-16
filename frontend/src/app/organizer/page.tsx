@@ -9,7 +9,7 @@ import { formatDate, getCategoryBg } from '@/lib/utils';
 import { downloadCSV, downloadWord, printPDF } from '@/lib/export';
 import {
   Plus, Calendar, Users, CheckCircle, Clock, Download, BarChart3, Eye, EyeOff, Edit,
-  FileSpreadsheet, FileText, Printer, ChevronDown
+  FileSpreadsheet, FileText, Printer, ChevronDown, Copy
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -105,6 +105,20 @@ export default function OrganizerDashboard() {
     totalAtt: events.reduce((sum, e) => sum + e.attendanceCount, 0),
   };
 
+  const approvalTimeline = {
+    pending: events.filter((e) => e.status === 'pending').length,
+    approved: events.filter((e) => ['approved', 'published', 'completed'].includes(e.status)).length,
+    rejected: events.filter((e) => e.status === 'rejected').length,
+  };
+
+  const averageFillRate = events.length
+    ? Math.round(
+        events.reduce((sum, e) => sum + ((e.registrationCount || 0) / Math.max(1, e.maxParticipants || 1)) * 100, 0) / events.length
+      )
+    : 0;
+
+  const topEvent = [...events].sort((a, b) => (b.registrationCount || 0) - (a.registrationCount || 0))[0];
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       <div className="flex items-center justify-between">
@@ -133,6 +147,42 @@ export default function OrganizerDashboard() {
             <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
           </div>
         ))}
+      </div>
+
+      {/* Organizer insights */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="glass-card">
+          <h3 className="text-sm uppercase tracking-[0.2em] text-[#B0B0B0] mb-4">Approval timeline</h3>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="metric-tile">
+              <p className="text-xs text-[#AFAFAF]">Pending</p>
+              <p className="text-2xl font-semibold text-yellow-300 mt-1">{approvalTimeline.pending}</p>
+            </div>
+            <div className="metric-tile">
+              <p className="text-xs text-[#AFAFAF]">Approved</p>
+              <p className="text-2xl font-semibold text-green-300 mt-1">{approvalTimeline.approved}</p>
+            </div>
+            <div className="metric-tile">
+              <p className="text-xs text-[#AFAFAF]">Rejected</p>
+              <p className="text-2xl font-semibold text-red-300 mt-1">{approvalTimeline.rejected}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="glass-card">
+          <h3 className="text-sm uppercase tracking-[0.2em] text-[#B0B0B0] mb-4">Registration export insights</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="metric-tile">
+              <p className="text-xs text-[#AFAFAF]">Avg fill rate</p>
+              <p className="text-2xl font-semibold text-white mt-1">{averageFillRate}%</p>
+            </div>
+            <div className="metric-tile">
+              <p className="text-xs text-[#AFAFAF]">Top event</p>
+              <p className="text-sm font-semibold text-white mt-2 truncate">{topEvent?.title || '—'}</p>
+              <p className="text-xs text-[#AFAFAF] mt-1">{topEvent ? `${topEvent.registrationCount} regs` : 'No data'}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Events List */}
@@ -209,6 +259,9 @@ export default function OrganizerDashboard() {
                   </Link>
                   <Link href={`/organizer/submit?edit=${event._id}`} className="p-2 rounded-lg hover:bg-primary-500/10 text-gray-400 hover:text-primary-300 transition-colors" title="Edit Event">
                     <Edit className="w-4 h-4" />
+                  </Link>
+                  <Link href={`/organizer/submit?duplicate=${event._id}`} className="p-2 rounded-lg hover:bg-white/10 text-gray-400 transition-colors" title="Duplicate Event">
+                    <Copy className="w-4 h-4" />
                   </Link>
                   <Link href={`/admin/analytics`} className="p-2 rounded-lg hover:bg-white/10 text-gray-400 transition-colors" title="Analytics">
                     <BarChart3 className="w-4 h-4" />

@@ -155,6 +155,20 @@ export const api = {
       const query = params ? '?' + new URLSearchParams(params).toString() : '';
       return fetchApi<any>(`/admin/users${query}`);
     },
+      anomalies: () => fetchApi<any>('/admin/anomalies'),
+    anomalyRules: () => fetchApi<any>('/admin/anomaly-rules'),
+    createAnomalyRule: (body: any) =>
+      fetchApi<any>('/admin/anomaly-rules', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+    updateAnomalyRule: (id: string, body: any) =>
+      fetchApi<any>(`/admin/anomaly-rules/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      }),
+    deleteAnomalyRule: (id: string) =>
+      fetchApi<any>(`/admin/anomaly-rules/${id}`, { method: 'DELETE' }),
   },
 
   analytics: {
@@ -163,6 +177,8 @@ export const api = {
     departments: () => fetchApi<any>('/analytics/departments'),
     categories: () => fetchApi<any>('/analytics/categories'),
     event: (id: string) => fetchApi<any>(`/analytics/event/${id}`),
+      funnel: () => fetchApi<any>('/analytics/funnel'),
+      funnelSummary: () => fetchApi<any>('/analytics/funnel/summary'),
   },
 
   notifications: {
@@ -198,4 +214,31 @@ export const api = {
     eventPayments: (eventId: string) =>
       fetchApi<any>(`/payments/event/${eventId}`),
   },
+
+    savedFilters: {
+      list: () => fetchApi<any>('/user/saved-filters'),
+      get: (id: string) => fetchApi<any>(`/user/saved-filters/${id}`),
+      create: (body: any) =>
+        fetchApi<any>('/user/saved-filters', {
+          method: 'POST',
+          body: JSON.stringify(body),
+        }),
+      update: (id: string, body: any) =>
+        fetchApi<any>(`/user/saved-filters/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify(body),
+        }),
+      delete: (id: string) =>
+        fetchApi<any>(`/user/saved-filters/${id}`, { method: 'DELETE' }),
+    },
+
+    certificates: {
+      list: () => fetchApi<any>('/certificates'),
+      get: (id: string) => fetchApi<any>(`/certificates/${id}`),
+      issue: (eventId: string, userIds?: string[]) =>
+        fetchApi<any>('/certificates/issue', {
+          method: 'POST',
+          body: JSON.stringify({ eventId, userIds }),
+        }),
+    },
 };

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
-import { Event } from '@/types';
+import { Bookmark, Event } from '@/types';
 import { useAuth } from '@/lib/auth';
 import MagazineHero from '@/components/editorial/MagazineHero';
 import EditorialFlow from '@/components/editorial/EditorialFlow';
@@ -15,6 +15,9 @@ export default function HomePage() {
   const [trending, setTrending] = useState<Event[]>([]);
   const [upcoming, setUpcoming] = useState<Event[]>([]);
   const [live, setLive] = useState<Event[]>([]);
+  const [recommended, setRecommended] = useState<Event[]>([]);
+  const [bookmarkedEvents, setBookmarkedEvents] = useState<Event[]>([]);
+  const [recentlyViewed, setRecentlyViewed] = useState<Event[]>([]);
   const [canViewAnalytics, setCanViewAnalytics] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -65,6 +68,7 @@ export default function HomePage() {
         api.events.trending(),
         api.events.upcoming(),
         api.events.live(),
+        api.events.recommended(),
       ]);
 
       // Gracefully handle partial failures — show whatever data loaded
@@ -72,12 +76,40 @@ export default function HomePage() {
       if (results[1].status === 'fulfilled') setTrending(results[1].value.data);
       if (results[2].status === 'fulfilled') setUpcoming(results[2].value.data);
       if (results[3].status === 'fulfilled') setLive(results[3].value.data);
+      if (results[4].status === 'fulfilled') setRecommended(results[4].value.data || []);
     } catch (err) {
       console.error('Failed to load events:', err);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!user) {
+      setBookmarkedEvents([]);
+      return;
+    }
+
+    api.bookmarks.list()
+      .then((res) => {
+        const list: Bookmark[] = res.data || [];
+        setBookmarkedEvents(list.map((b) => b.eventId).filter(Boolean).slice(0, 4));
+      })
+      .catch(() => setBookmarkedEvents([]));
+  }, [user]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('bec-recent-events');
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as Event[];
+      if (Array.isArray(parsed)) {
+        setRecentlyViewed(parsed.slice(0, 4));
+      }
+    } catch {
+      setRecentlyViewed([]);
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -91,6 +123,43 @@ export default function HomePage() {
   }
 
   const spotlight = featured[0] || trending[0] || upcoming[0] || live[0];
+
+  const totalAudience = featured.concat(trending).reduce((sum, e) => sum + (e.registrationCount || 0), 0);
+
+  const EventMiniSection = ({
+    title,
+    subtitle,
+    items,
+    emptyText,
+  }: {
+    title: string;
+    subtitle: string;
+    items: Event[];
+    emptyText: string;
+  }) => (
+    <div className="soft-panel p-5">
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold text-white headline-tight">{title}</h3>
+        <p className="text-sm text-[#B0B0B0] mt-1">{subtitle}</p>
+      </div>
+      {items.length === 0 ? (
+        <p className="text-sm text-[#8f8f8f]">{emptyText}</p>
+      ) : (
+        <div className="space-y-3">
+          {items.slice(0, 4).map((event) => (
+            <Link
+              key={event._id}
+              href={`/events/${event._id}`}
+              className="block rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 transition-all hover:border-[#C6A75E]/35 hover:bg-white/[0.03]"
+            >
+              <p className="text-sm font-medium text-[#F5F5F5] truncate">{event.title}</p>
+              <p className="mt-1 text-xs text-[#AFAFAF] truncate">{event.venue} • {event.time}</p>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <main className="bg-[#0A0A0A] text-[#F5F5F5]">
@@ -108,6 +177,48 @@ export default function HomePage() {
         live={live}
         canViewAnalytics={canViewAnalytics}
       />
+
+      <section className="section-wrap pb-10">
+        <div className="soft-panel p-6 sm:p-8">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="metric-tile">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-[#B0B0B0]">Featured stories</p>
+              <p className="mt-2 text-2xl font-semibold text-white">{featured.length}</p>
+            </div>
+            <div className="metric-tile">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-[#B0B0B0]">Active momentum</p>
+              <p className="mt-2 text-2xl font-semibold text-white">{trending.length}</p>
+            </div>
+            <div className="metric-tile">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-[#B0B0B0]">Registrations tracked</p>
+              <p className="mt-2 text-2xl font-semibold text-white">{totalAudience}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-wrap pb-10 section-stack">
+        <div className="grid gap-4 lg:grid-cols-3">
+          <EventMiniSection
+            title="Recommended for you"
+            subtitle="Personalized picks based on event trends"
+            items={recommended}
+            emptyText="No recommendations yet. Explore events to improve suggestions."
+          />
+          <EventMiniSection
+            title="Recently viewed"
+            subtitle="Continue where you left off"
+            items={recentlyViewed}
+            emptyText="No recently viewed events yet."
+          />
+          <EventMiniSection
+            title="Saved by you"
+            subtitle="Your bookmarked shortlist"
+            items={bookmarkedEvents}
+            emptyText={user ? 'No bookmarks yet. Save events to track them here.' : 'Sign in to see your bookmarks.'}
+          />
+        </div>
+      </section>
 
       <section className="mx-auto max-w-7xl border-t border-white/[0.08] px-4 pb-20 pt-10 sm:px-6 lg:px-8">
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.24)] sm:p-8">

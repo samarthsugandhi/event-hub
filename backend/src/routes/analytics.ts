@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import Event from '../models/Event';
 import Registration from '../models/Registration';
+import AnalyticsEvent from '../models/AnalyticsEvent';
 import { protect, authorize, AuthRequest } from '../middleware/auth';
 
 const router = Router();
@@ -181,6 +182,126 @@ router.get(
             : '0',
           departmentBreakdown,
           yearBreakdown,
+        },
+      });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+);
+
+// POST /api/analytics/track — Record funnel event (no auth required for offline support)
+router.post(
+  '/track',
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const { userId, eventId, step, path, metadata } = req.body;
+
+      if (!step || !['discover', 'view_detail', 'register', 'pay', 'attend'].includes(step)) {
+        res.status(400).json({ success: false, message: 'Invalid funnel step' });
+        return;
+      }
+
+      const analyticsEvent = await AnalyticsEvent.create({
+        userId,
+        eventId,
+        step,
+        path,
+        metadata,
+      });
+
+      res.status(201).json({ success: true, data: analyticsEvent });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+);
+
+// GET /api/analytics/funnel — Get user's funnel journey
+router.get(
+  '/funnel',
+  protect,
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const { startDate, endDate } = req.query;
+      const query: any = { userId: req.user?._id };
+
+      if (startDate || endDate) {
+        query.createdAt = {};
+        if (startDate) query.createdAt.$gte = new Date(startDate as string);
+        if (endDate) query.createdAt.$lte = new Date(endDate as string);
+      }
+
+      const events = await AnalyticsEvent.find(query)
+        .sort('createdAt')
+        .populate('eventId', 'title category');
+
+      // Compute funnel conversion rates
+      const steps = ['discover', 'view_detail', 'register', 'pay', 'attend'];
+      const stepCounts: Record<string, number> = {};
+      steps.forEach((s) => {
+        stepCounts[s] = events.filter((e) => e.step === s).length;
+      });
+
+      const conversions: Record<string, string> = {};
+      for (let i = 0; i < steps.length - 1; i++) {
+        const current = steps[i];
+        const next = steps[i + 1];
+        const rate = stepCounts[current] > 0
+          ? ((stepCounts[next] / stepCounts[current]) * 100).toFixed(1)
+          : '0';
+        conversions[`${current}_to_${next}`] = rate;
+      }
+
+      res.json({
+        success: true,
+        data: {
+          events,
+          stepCounts,
+          conversions,
+        },
+      });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+);
+
+// GET /api/analytics/funnel/summary (admin) — Platform-wide funnel summary
+router.get(
+  '/funnel/summary',
+  protect,
+  authorize('admin'),
+  async (_req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const steps = ['discover', 'view_detail', 'register', 'pay', 'attend'];
+      const stepCounts: Record<string, number> = {};
+      const uniqueUsers: Record<string, Set<string>> = {};
+
+      for (const step of steps) {
+        const events = await AnalyticsEvent.find({ step });
+        stepCounts[step] = events.length;
+        uniqueUsers[step] = new Set(events.map((e) => e.userId).filter(Boolean) as string[]);
+      }
+
+      const conversions: Record<string, string> = {};
+      for (let i = 0; i < steps.length - 1; i++) {
+        const current = steps[i];
+        const next = steps[i + 1];
+        const rate = stepCounts[current] > 0
+          ? ((stepCounts[next] / stepCounts[current]) * 100).toFixed(1)
+          : '0';
+        conversions[`${current}_to_${next}`] = rate;
+      }
+
+      res.json({
+        success: true,
+        data: {
+          stepCounts,
+          uniqueUserCounts: Object.fromEntries(
+            Object.entries(uniqueUsers).map(([step, users]) => [step, users.size])
+          ),
+          conversions,
         },
       });
     } catch (error: any) {

@@ -58,12 +58,6 @@ export default function Navbar() {
               { href: '/admin/scanner', label: 'Scanner', icon: QrCode },
             ]
           : []),
-        ...(['student', 'faculty'].includes(user.role)
-          ? [
-              { href: '/organizer', label: 'My Events', icon: Users },
-              { href: '/organizer/submit', label: 'Create Event', icon: PlusCircle },
-            ]
-          : []),
       ]
     : [];
 

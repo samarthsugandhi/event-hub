@@ -73,6 +73,9 @@ export default function AdminDashboard() {
   const [events, setEvents] = useState<Event[]>([]);
   const [filter, setFilter] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkProcessing, setBulkProcessing] = useState(false);
+  const [anomalies, setAnomalies] = useState<any[]>([]);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -80,17 +83,23 @@ export default function AdminDashboard() {
     loadData();
   }, [filter]);
 
+  useEffect(() => {
+    setSelectedIds([]);
+  }, [filter, events.length]);
+
   const loadData = async () => {
     setError(null);
     try {
       const results = await Promise.allSettled([
         api.admin.stats(),
         api.admin.events(filter ? { status: filter } : {}),
+        api.admin.anomalies(),
       ]);
       if (results[0].status === 'fulfilled') setStats(results[0].value.data);
       else setError(results[0].reason?.message);
       if (results[1].status === 'fulfilled') setEvents(results[1].value.data);
       else setError(results[1].reason?.message);
+      if (results[2].status === 'fulfilled') setAnomalies(results[2].value.data || []);
     } catch (err: any) {
       setError(err.message || 'Failed to load dashboard');
     } finally {
@@ -134,6 +143,41 @@ export default function AdminDashboard() {
     }
   };
 
+  const runBulkAction = async (action: 'approve' | 'reject' | 'publish') => {
+    if (!selectedIds.length) return;
+    setBulkProcessing(true);
+    try {
+      await Promise.all(
+        selectedIds.map((id) => {
+          if (action === 'approve') return api.admin.approve(id);
+          if (action === 'reject') return api.admin.reject(id);
+          return api.admin.publish(id);
+        })
+      );
+      toast.success(`Bulk ${action} completed for ${selectedIds.length} event(s)`);
+      setSelectedIds([]);
+      loadData();
+    } catch (err: any) {
+      toast.error(err?.message || `Bulk ${action} failed`);
+    } finally {
+      setBulkProcessing(false);
+    }
+  };
+
+  const issueCertificatesForSelected = async () => {
+    const selectedEvents = events.filter((e) => selectedIds.includes(e._id));
+    if (!selectedEvents.length) return;
+    setBulkProcessing(true);
+    try {
+      await Promise.all(selectedEvents.map((event) => api.certificates.issue(event._id)));
+      toast.success(`Certificates issued for ${selectedEvents.length} event(s)`);
+    } catch (err: any) {
+      toast.error(err?.message || 'Certificate issuance failed');
+    } finally {
+      setBulkProcessing(false);
+    }
+  };
+
   if (!user || (user.role !== 'admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -165,6 +209,8 @@ export default function AdminDashboard() {
   ];
 
   const statusFilters = ['', 'pending', 'published', 'rejected', 'cancelled'];
+  const flaggedEventIds = new Set(anomalies.map((a) => String(a.eventId)));
+  const highAttendanceGap = anomalies.filter((a) => a.type === 'no-show-gap').slice(0, 5);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -176,6 +222,9 @@ export default function AdminDashboard() {
         <div className="flex gap-3">
           <Link href="/admin/scanner" className="btn-secondary flex items-center gap-2 text-sm">
             QR Scanner
+          </Link>
+          <Link href="/admin/anomaly-rules" className="btn-secondary flex items-center gap-2 text-sm">
+            Rules
           </Link>
           <Link href="/admin/analytics" className="btn-secondary flex items-center gap-2 text-sm">
             <BarChart3 className="w-4 h-4" /> Analytics
@@ -220,10 +269,49 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        <div className="mb-5 flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => runBulkAction('approve')}
+            disabled={!selectedIds.length || bulkProcessing}
+            className="btn-secondary !py-2 text-xs"
+          >
+            Bulk approve ({selectedIds.length})
+          </button>
+          <button
+            onClick={() => runBulkAction('publish')}
+            disabled={!selectedIds.length || bulkProcessing}
+            className="btn-secondary !py-2 text-xs"
+          >
+            Bulk publish
+          </button>
+          <button
+            onClick={() => runBulkAction('reject')}
+            disabled={!selectedIds.length || bulkProcessing}
+            className="btn-danger !py-2 text-xs"
+          >
+            Bulk reject
+          </button>
+          <button
+            onClick={issueCertificatesForSelected}
+            disabled={!selectedIds.length || bulkProcessing}
+            className="btn-secondary !py-2 text-xs"
+          >
+            Issue certificates
+          </button>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/[0.06]">
+                <th className="text-left py-3 px-4 text-gray-500 font-medium">
+                  <input
+                    type="checkbox"
+                    checked={events.length > 0 && selectedIds.length === events.length}
+                    onChange={(e) => setSelectedIds(e.target.checked ? events.map((ev) => ev._id) : [])}
+                    aria-label="Select all events"
+                  />
+                </th>
                 <th className="text-left py-3 px-4 text-gray-500 font-medium">Event</th>
                 <th className="text-left py-3 px-4 text-gray-500 font-medium">Category</th>
                 <th className="text-left py-3 px-4 text-gray-500 font-medium">Date</th>
@@ -235,11 +323,28 @@ export default function AdminDashboard() {
             <tbody>
               {events.map((event) => (
                 <tr key={event._id} className="border-b border-white/[0.03] hover:bg-white/[0.02]">
+                  <td className="py-3 px-4 align-top">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(event._id)}
+                      onChange={(e) => {
+                        setSelectedIds((prev) =>
+                          e.target.checked
+                            ? (prev.includes(event._id) ? prev : [...prev, event._id])
+                            : prev.filter((id) => id !== event._id)
+                        );
+                      }}
+                      aria-label={`Select ${event.title}`}
+                    />
+                  </td>
                   <td className="py-3 px-4">
                     <Link href={`/events/${event._id}`} className="text-white hover:text-primary-300 font-medium transition-colors">
                       {event.title}
                     </Link>
                     <p className="text-xs text-gray-600 mt-0.5">{event.organizerName}</p>
+                    {flaggedEventIds.has(event._id) && (
+                      <p className="text-[11px] text-red-300 mt-1">⚠ anomaly flagged</p>
+                    )}
                   </td>
                   <td className="py-3 px-4">
                     <span className={`badge ${getCategoryBg(event.category)} text-xs`}>
@@ -341,6 +446,41 @@ export default function AdminDashboard() {
         {events.length === 0 && (
           <p className="text-center text-gray-500 py-8">No events found</p>
         )}
+      </div>
+
+      {/* Risk and gap report */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="glass-card">
+          <h3 className="text-sm uppercase tracking-[0.22em] text-[#B0B0B0] mb-3">Anomaly flags</h3>
+          {anomalies.length === 0 ? (
+            <p className="text-sm text-[#8f8f8f]">No anomalies detected in current filtered events.</p>
+          ) : (
+            <div className="space-y-2">
+              {anomalies.slice(0, 5).map((a) => (
+                <Link key={`${a.type}-${a.eventId}`} href={`/events/${a.eventId}`} className="block rounded-xl border border-red-500/20 bg-red-500/5 px-3 py-2">
+                  <p className="text-sm text-white truncate">{a.title}</p>
+                  <p className="text-xs text-red-300 mt-1">{a.message}</p>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="glass-card">
+          <h3 className="text-sm uppercase tracking-[0.22em] text-[#B0B0B0] mb-3">Attendance gap report</h3>
+          {highAttendanceGap.length === 0 ? (
+            <p className="text-sm text-[#8f8f8f]">No significant attendance gaps detected.</p>
+          ) : (
+            <div className="space-y-2">
+              {highAttendanceGap.map((a) => (
+                <Link key={`${a.type}-${a.eventId}`} href={`/events/${a.eventId}`} className="block rounded-xl border border-yellow-500/20 bg-yellow-500/5 px-3 py-2">
+                  <p className="text-sm text-white truncate">{a.title}</p>
+                  <p className="text-xs text-yellow-300 mt-1">{a.message}</p>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

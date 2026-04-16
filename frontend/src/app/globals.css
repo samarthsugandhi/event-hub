@@ -71,6 +71,33 @@ body {
     @apply glass rounded-2xl p-6;
   }
 
+  .section-wrap {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-stack {
+    @apply space-y-8;
+  }
+
+  .headline-tight {
+    @apply tracking-[-0.02em] leading-tight;
+    text-wrap: balance;
+  }
+
+  .copy-readable {
+    max-width: 68ch;
+    line-height: 1.7;
+    color: #d0d0d0;
+  }
+
+  .soft-panel {
+    @apply rounded-2xl border border-white/[0.08] bg-white/[0.02];
+  }
+
+  .metric-tile {
+    @apply rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3;
+  }
+
   .glass-card-hover {
     @apply glass-card glass-hover;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),

@@ -146,22 +146,22 @@ export default function AnalyticsPage() {
       {
         label: 'Attendance Rate (%)',
         data: eventStats.slice(0, 10).map((e) => parseFloat(e.attendanceRate)),
-        borderColor: 'rgba(139, 92, 246, 1)',
-        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+        borderColor: 'rgba(139, 30, 45, 1)',
+        backgroundColor: 'rgba(139, 30, 45, 0.12)',
         fill: true,
         tension: 0.4,
-        pointBackgroundColor: 'rgba(139, 92, 246, 1)',
-        pointBorderColor: '#1e1b4b',
+        pointBackgroundColor: 'rgba(198, 167, 94, 1)',
+        pointBorderColor: '#111111',
         pointBorderWidth: 2,
       },
     ],
   };
 
   const overviewCards = [
-    { label: 'Total Events', value: overview?.totalEvents || 0, icon: BarChart3, color: 'text-blue-400' },
-    { label: 'Total Registrations', value: overview?.totalRegistrations || 0, icon: Users, color: 'text-purple-400' },
-    { label: 'Total Attendance', value: overview?.totalAttendance || 0, icon: TrendingUp, color: 'text-green-400' },
-    { label: 'Attendance Rate', value: `${overview?.attendanceRate || 0}%`, icon: PieChart, color: 'text-orange-400' },
+    { label: 'Total Events', value: overview?.totalEvents || 0, icon: BarChart3, color: 'text-primary-300' },
+    { label: 'Total Registrations', value: overview?.totalRegistrations || 0, icon: Users, color: 'text-[#C6A75E]' },
+    { label: 'Total Attendance', value: overview?.totalAttendance || 0, icon: TrendingUp, color: 'text-[#5B6E5D]' },
+    { label: 'Attendance Rate', value: `${overview?.attendanceRate || 0}%`, icon: PieChart, color: 'text-[#D6C7A1]' },
   ];
 
   return (

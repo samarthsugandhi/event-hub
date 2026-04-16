@@ -14,8 +14,8 @@ const MapView = dynamic(() => import('@/components/map/MapView'), {
   loading: () => (
     <div className="h-full w-full flex items-center justify-center bg-dark-900/50">
       <div className="text-center">
-        <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-sm text-gray-500">Loading map…</p>
+        <div className="w-10 h-10 border-2 border-[#8B1E2D] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-sm text-[#B0B0B0]">Loading map…</p>
       </div>
     </div>
   ),
@@ -55,7 +55,7 @@ export default function CampusMapPage() {
     (e) => e.locationCoordinates?.lat && e.locationCoordinates?.lng
   );
 
-  const campusCenter: [number, number] = [16.1842, 75.6562];
+  const campusCenter: [number, number] = [16.1726, 75.6610];
   const mapCenter: [number, number] = eventsWithCoords.length > 0
     ? [
         eventsWithCoords.reduce((sum, event) => sum + event.locationCoordinates!.lat, 0) / eventsWithCoords.length,
@@ -72,32 +72,32 @@ export default function CampusMapPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Header */}
-      <section className="relative overflow-hidden glass-card aurora-border">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-violet-500/10 to-transparent" />
+      <section className="relative overflow-hidden glass-card">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(198,167,94,0.14),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(139,30,45,0.18),transparent_45%)]" />
         <div className="relative z-10 flex flex-col xl:flex-row xl:items-end xl:justify-between gap-6">
           <div className="space-y-4 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-400/30 bg-cyan-400/10 text-cyan-200 text-xs font-semibold tracking-widest uppercase">
-              <Compass className="w-3.5 h-3.5" /> Campus Navigation
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#C6A75E]/30 bg-[#C6A75E]/10 text-[#F5F5F5] text-xs font-semibold tracking-widest uppercase">
+              <Compass className="w-3.5 h-3.5 text-[#C6A75E]" /> Campus Navigation
             </div>
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold text-white flex items-center gap-3">
-                <MapPin className="w-8 h-8 text-cyan-300" /> Campus Event Map
+                <MapPin className="w-8 h-8 text-[#C6A75E]" /> Campus Event Map
               </h1>
-              <p className="text-slate-300 mt-3 max-w-2xl leading-relaxed">
+              <p className="text-[#B0B0B0] mt-3 max-w-2xl leading-relaxed">
                 Find event locations across BEC using a campus-first layout tuned for
                 5MC5+WV4 and 5MC5+XHP, Vidayagiri, Bagalkote.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-3 text-sm text-slate-300">
+            <div className="flex flex-wrap gap-3 text-sm text-[#B0B0B0]">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
-                <Pin className="w-4 h-4 text-cyan-300" /> {eventsWithCoords.length} pinned events
+                <Pin className="w-4 h-4 text-[#C6A75E]" /> {eventsWithCoords.length} pinned events
               </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
-                <Flame className="w-4 h-4 text-orange-300" /> {highlightedCount} highlighted
+                <Flame className="w-4 h-4 text-[#8B1E2D]" /> {highlightedCount} highlighted
               </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
-                <Layers3 className="w-4 h-4 text-violet-300" /> {activeCategories.length} active categories
+                <Layers3 className="w-4 h-4 text-[#5B6E5D]" /> {activeCategories.length} active categories
               </span>
             </div>
           </div>
@@ -107,8 +107,8 @@ export default function CampusMapPage() {
               onClick={() => setView('map')}
               className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all ${
                 view === 'map'
-                  ? 'bg-gradient-to-r from-cyan-500 to-violet-500 text-white shadow-lg shadow-cyan-500/20'
-                  : 'glass text-slate-400 hover:text-white'
+                  ? 'bg-[#8B1E2D] text-white shadow-lg shadow-black/25'
+                  : 'glass text-[#B0B0B0] hover:text-white'
               }`}
               title="Map View"
             >
@@ -118,8 +118,8 @@ export default function CampusMapPage() {
               onClick={() => setView('list')}
               className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all ${
                 view === 'list'
-                  ? 'bg-gradient-to-r from-cyan-500 to-violet-500 text-white shadow-lg shadow-cyan-500/20'
-                  : 'glass text-slate-400 hover:text-white'
+                  ? 'bg-[#8B1E2D] text-white shadow-lg shadow-black/25'
+                  : 'glass text-[#B0B0B0] hover:text-white'
               }`}
               title="List View"
             >
@@ -132,17 +132,17 @@ export default function CampusMapPage() {
       {/* Summary Grid */}
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Pinned', value: eventsWithCoords.length, icon: MapPin, tone: 'text-cyan-300' },
-          { label: 'Registrations', value: totalRegistrations, icon: Users, tone: 'text-violet-300' },
-          { label: 'Highlighted', value: highlightedCount, icon: Sparkles, tone: 'text-amber-300' },
-          { label: 'Categories', value: activeCategories.length, icon: Layers3, tone: 'text-emerald-300' },
+          { label: 'Pinned', value: eventsWithCoords.length, icon: MapPin, tone: 'text-[#C6A75E]' },
+          { label: 'Registrations', value: totalRegistrations, icon: Users, tone: 'text-[#8B1E2D]' },
+          { label: 'Highlighted', value: highlightedCount, icon: Sparkles, tone: 'text-[#6B4F4F]' },
+          { label: 'Categories', value: activeCategories.length, icon: Layers3, tone: 'text-[#5B6E5D]' },
         ].map((stat) => (
-          <div key={stat.label} className="glass-card aurora-border flex items-center gap-4">
+          <div key={stat.label} className="glass-card flex items-center gap-4">
             <div className={`w-11 h-11 rounded-2xl bg-white/[0.04] flex items-center justify-center ${stat.tone}`}>
               <stat.icon className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{stat.label}</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-[#9a9a9a]">{stat.label}</p>
               <p className="text-2xl font-bold text-white mt-0.5">{stat.value}</p>
             </div>
           </div>
@@ -157,8 +157,8 @@ export default function CampusMapPage() {
             onClick={() => setSelectedCategory(cat)}
             className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition-all border flex items-center gap-2 ${
               selectedCategory === cat
-                ? 'border-cyan-400/40 bg-cyan-400/10 text-cyan-200 shadow-lg shadow-cyan-500/10'
-                : 'border-white/10 text-slate-400 hover:border-white/20 hover:text-white'
+                ? 'border-[#C6A75E]/40 bg-[#C6A75E]/10 text-white shadow-lg shadow-black/20'
+                : 'border-white/10 text-[#B0B0B0] hover:border-white/20 hover:text-white'
             }`}
           >
             {cat !== 'all' && (
@@ -174,16 +174,16 @@ export default function CampusMapPage() {
 
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-2 border-[#8B1E2D] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : view === 'map' ? (
         /* Map View */
         <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1.75fr)_minmax(300px,1fr)] gap-6 items-start">
           <div className="space-y-4">
-            <div className="glass rounded-3xl overflow-hidden relative aurora-border" style={{ minHeight: '72vh' }}>
+            <div className="glass rounded-3xl overflow-hidden relative" style={{ height: '72vh' }}>
               <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between p-4 sm:p-5 pointer-events-none">
                 <div className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-black/35 backdrop-blur-xl border border-white/10 px-3 py-1.5 text-xs text-slate-200">
-                  <MapPin className="w-3.5 h-3.5 text-cyan-300" /> Centered on campus anchor
+                  <MapPin className="w-3.5 h-3.5 text-[#C6A75E]" /> Centered on campus anchor
                 </div>
                 <div className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-black/35 backdrop-blur-xl border border-white/10 px-3 py-1.5 text-xs text-slate-200">
                   {eventsWithCoords.length} map pins
@@ -195,9 +195,9 @@ export default function CampusMapPage() {
               {eventsWithCoords.length === 0 && (
                 <div className="absolute inset-0 flex items-center justify-center bg-[#040816]/85 z-[1000] backdrop-blur-sm">
                   <div className="text-center max-w-sm px-6">
-                    <AlertCircle className="w-10 h-10 text-slate-500 mx-auto mb-3" />
-                    <p className="text-slate-300 font-medium">No events with map coordinates found.</p>
-                    <p className="text-sm text-slate-500 mt-1">Seeded events need campus coordinates to appear on the map.</p>
+                    <AlertCircle className="w-10 h-10 text-[#9a9a9a] mx-auto mb-3" />
+                    <p className="text-[#B0B0B0] font-medium">No events with map coordinates found.</p>
+                    <p className="text-sm text-[#9a9a9a] mt-1">Seeded events need campus coordinates to appear on the map.</p>
                   </div>
                 </div>
               )}
@@ -205,11 +205,11 @@ export default function CampusMapPage() {
 
             {/* Map Legend */}
             {activeCategories.length > 0 && (
-              <div className="glass-card aurora-border">
-                <p className="text-xs text-slate-500 mb-3 font-semibold tracking-[0.2em] uppercase">Map Legend</p>
+              <div className="glass-card">
+                <p className="text-xs text-[#9a9a9a] mb-3 font-semibold tracking-[0.2em] uppercase">Map Legend</p>
                 <div className="flex flex-wrap gap-3">
                   {activeCategories.map((cat) => (
-                    <span key={cat} className="flex items-center gap-1.5 text-xs text-slate-300 rounded-full border border-white/8 bg-white/[0.03] px-3 py-1.5">
+                    <span key={cat} className="flex items-center gap-1.5 text-xs text-[#B0B0B0] rounded-full border border-white/8 bg-white/[0.03] px-3 py-1.5">
                       <span
                         className="w-3 h-3 rounded-full"
                         style={{ background: CATEGORY_COLORS[cat] }}
@@ -223,9 +223,9 @@ export default function CampusMapPage() {
           </div>
 
           <aside className="space-y-4 xl:sticky xl:top-24">
-            <div className="glass-card aurora-border">
+            <div className="glass-card">
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="w-4 h-4 text-cyan-300" />
+                <Sparkles className="w-4 h-4 text-[#C6A75E]" />
                 <h2 className="text-lg font-semibold text-white">Campus Highlights</h2>
               </div>
               <div className="space-y-3">
@@ -244,7 +244,7 @@ export default function CampusMapPage() {
                       </div>
                       <div className="min-w-0">
                         <p className="text-white font-medium truncate">{event.title}</p>
-                        <p className="text-xs text-slate-400 mt-1 truncate">{event.venue}</p>
+                        <p className="text-xs text-[#B0B0B0] mt-1 truncate">{event.venue}</p>
                         <span className={`badge ${getCategoryBg(event.category)} mt-2 text-[10px]`}>{CATEGORY_LABELS[event.category]}</span>
                       </div>
                     </div>
@@ -254,9 +254,9 @@ export default function CampusMapPage() {
             </div>
 
             {livePinned.length > 0 && (
-              <div className="glass-card aurora-border">
+              <div className="glass-card">
                 <div className="flex items-center gap-2 mb-4">
-                  <Flame className="w-4 h-4 text-orange-300" />
+                  <Flame className="w-4 h-4 text-[#8B1E2D]" />
                   <h2 className="text-lg font-semibold text-white">Live On Campus</h2>
                 </div>
                 <div className="space-y-3">
@@ -268,7 +268,7 @@ export default function CampusMapPage() {
                     >
                       <div className="min-w-0">
                         <p className="text-white text-sm font-medium truncate">{event.title}</p>
-                        <p className="text-xs text-slate-500 truncate">{event.venue}</p>
+                        <p className="text-xs text-[#9a9a9a] truncate">{event.venue}</p>
                       </div>
                       <span className="badge-live text-[10px]">LIVE</span>
                     </Link>
@@ -277,9 +277,9 @@ export default function CampusMapPage() {
               </div>
             )}
 
-            <div className="glass-card aurora-border">
+            <div className="glass-card">
               <h2 className="text-lg font-semibold text-white mb-3">Campus Anchor</h2>
-              <p className="text-sm text-slate-400 leading-relaxed">
+              <p className="text-sm text-[#B0B0B0] leading-relaxed">
                 Events are now centered around the BEC campus cluster near 5MC5+WV4 / 5MC5+XHP.
                 The map defaults to the average pin position for a tighter campus view.
               </p>
@@ -291,7 +291,7 @@ export default function CampusMapPage() {
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filtered.length === 0 ? (
             <div className="text-center py-16 md:col-span-2 xl:col-span-3 glass-card">
-              <p className="text-slate-400">No events found</p>
+              <p className="text-[#B0B0B0]">No events found</p>
             </div>
           ) : (
             filtered.map((event) => {
@@ -301,7 +301,7 @@ export default function CampusMapPage() {
                 <Link
                   key={event._id}
                   href={`/events/${event._id}`}
-                  className="glass-card aurora-border flex items-center gap-5 group hover:bg-white/[0.04] transition-all"
+                  className="glass-card flex items-center gap-5 group hover:bg-white/[0.04] transition-all"
                 >
                   <div
                     className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -329,12 +329,12 @@ export default function CampusMapPage() {
                       <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {formatDate(event.date)}</span>
                       <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {event.registrationCount}/{event.maxParticipants}</span>
                       {event.pricingType === 'paid' && (
-                        <span className="flex items-center gap-1 text-primary-400">
+                        <span className="flex items-center gap-1 text-[#C6A75E]">
                           <IndianRupee className="w-3 h-3" /> ₹{event.price}
                         </span>
                       )}
                       {event.participationType === 'team' && (
-                        <span className="flex items-center gap-1 text-purple-400">
+                        <span className="flex items-center gap-1 text-[#5B6E5D]">
                           <UsersRound className="w-3 h-3" /> Team
                         </span>
                       )}

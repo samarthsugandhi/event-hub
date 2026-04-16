@@ -184,7 +184,7 @@ export default function EventDetailPage() {
                 <span className="badge bg-green-500/20 text-green-300 border-green-500/30">🎉 Free</span>
               )}
               {event.participationType === 'team' && (
-                <span className="badge bg-purple-500/20 text-purple-300 border-purple-500/30">
+                <span className="badge bg-[#8B1E2D]/20 text-[#D6C7A1] border-[#8B1E2D]/30">
                   <UsersRound className="w-3 h-3 mr-1" /> Team ({event.minTeamSize}–{event.maxTeamSize})
                 </span>
               )}
@@ -243,7 +243,7 @@ export default function EventDetailPage() {
             <div className="glass-card">
               <h3 className="text-lg font-semibold text-white mb-4">Organizer</h3>
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-purple-500 flex items-center justify-center text-lg font-bold text-white">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-[#6b4f4f] flex items-center justify-center text-lg font-bold text-white">
                   {event.organizerName.charAt(0)}
                 </div>
                 <div>
@@ -309,11 +309,11 @@ export default function EventDetailPage() {
               )}
 
               {event.participationType === 'team' && (
-                <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-[#8B1E2D]/10 border border-[#8B1E2D]/20">
                   <span className="text-sm text-gray-300 flex items-center gap-1.5">
-                    <UsersRound className="w-4 h-4 text-purple-400" /> Team Event
+                    <UsersRound className="w-4 h-4 text-[#C6A75E]" /> Team Event
                   </span>
-                  <span className="text-sm font-medium text-purple-300">
+                  <span className="text-sm font-medium text-[#D6C7A1]">
                     {event.minTeamSize}–{event.maxTeamSize} members
                   </span>
                 </div>
@@ -327,7 +327,7 @@ export default function EventDetailPage() {
                 <div className="h-2 bg-white/[0.06] rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
-                      isFull ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-primary-500 to-purple-500'
+                      isFull ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-primary-500 to-[#6b4f4f]'
                     }`}
                     style={{ width: `${Math.min(100, (event.registrationCount / event.maxParticipants) * 100)}%` }}
                   />

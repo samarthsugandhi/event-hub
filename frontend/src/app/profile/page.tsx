@@ -127,7 +127,7 @@ export default function ProfilePage() {
       <div className="glass-card">
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-2xl font-bold text-white">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-[#6b4f4f] flex items-center justify-center text-2xl font-bold text-white">
               {user.name.charAt(0).toUpperCase()}
             </div>
             <div>

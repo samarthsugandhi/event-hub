@@ -49,8 +49,8 @@ export default function EventsPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-white mb-2">All Events</h1>
-        <p className="text-gray-400">Browse and discover events happening on campus</p>
+        <h1 className="text-3xl font-bold text-white mb-2 tracking-[-0.02em]">All Events</h1>
+        <p className="text-[#B0B0B0]">Browse and discover events happening on campus</p>
       </div>
 
       {/* Search */}
@@ -66,8 +66,8 @@ export default function EventsPage() {
             className={cn(
               'px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200',
               category === cat
-                ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/25'
-                : 'glass text-gray-400 hover:text-white hover:bg-white/10'
+                ? 'bg-[#8B1E2D] text-white shadow-lg shadow-black/25'
+                : 'glass text-[#B0B0B0] hover:text-white hover:bg-white/10'
             )}
           >
             {cat === 'all' ? 'All' : CATEGORY_LABELS[cat]}
@@ -78,7 +78,7 @@ export default function EventsPage() {
       {/* Results */}
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="w-10 h-10 rounded-full border-2 border-primary-500 border-t-transparent animate-spin" />
+          <div className="w-10 h-10 rounded-full border-2 border-[#8B1E2D] border-t-transparent animate-spin" />
         </div>
       ) : error ? (
         <ApiError message={error} onRetry={loadEvents} />
@@ -99,8 +99,8 @@ export default function EventsPage() {
               className={cn(
                 'w-10 h-10 rounded-lg text-sm font-medium transition-all',
                 p === page
-                  ? 'bg-primary-600 text-white'
-                  : 'glass text-gray-400 hover:text-white'
+                  ? 'bg-[#8B1E2D] text-white'
+                  : 'glass text-[#B0B0B0] hover:text-white'
               )}
             >
               {p}

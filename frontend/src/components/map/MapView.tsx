@@ -16,13 +16,13 @@ function createIcon(color: string) {
     html: `<div style="
       width: 28px; height: 28px;
       background: ${color};
-      border: 3px solid white;
+      border: 3px solid #0A0A0A;
       border-radius: 50% 50% 50% 0;
       transform: rotate(-45deg);
       box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 4px rgba(255,255,255,0.04);
     "><div style="
       width: 8px; height: 8px;
-      background: white;
+      background: #F5F5F5;
       border-radius: 50%;
       position: absolute;
       top: 50%; left: 50%;
@@ -35,15 +35,15 @@ function createIcon(color: string) {
 }
 
 const CATEGORY_MARKER_COLORS: Record<string, string> = {
-  technical: '#3b82f6',
-  workshop: '#8b5cf6',
-  cultural: '#ec4899',
-  sports: '#22c55e',
-  seminar: '#f97316',
-  hackathon: '#ef4444',
-  webinar: '#06b6d4',
-  conference: '#eab308',
-  other: '#6b7280',
+  technical: '#8B1E2D',
+  workshop: '#6B4F4F',
+  cultural: '#C6A75E',
+  sports: '#5B6E5D',
+  seminar: '#8B1E2D',
+  hackathon: '#731723',
+  webinar: '#6B4F4F',
+  conference: '#C6A75E',
+  other: '#6f6f6f',
 };
 
 interface MapViewProps {
@@ -93,7 +93,7 @@ export default function MapView({ events, center }: MapViewProps) {
                 }}>
                   {CATEGORY_LABELS[event.category]}
                 </div>
-                <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 4px', color: '#1e1a3a' }}>
+                <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 4px', color: '#111827' }}>
                   {event.title}
                 </h3>
                 <p style={{ fontSize: '12px', color: '#4b5563', margin: '0 0 8px' }}>
@@ -111,7 +111,7 @@ export default function MapView({ events, center }: MapViewProps) {
                   )}
                 </div>
                 {event.pricingType === 'paid' && (
-                  <div style={{ fontSize: '11px', color: '#6366f1', fontWeight: 600, marginBottom: '8px' }}>
+                  <div style={{ fontSize: '11px', color: '#8B1E2D', fontWeight: 600, marginBottom: '8px' }}>
                     💰 ₹{event.price} {event.priceType === 'per_team' ? '/team' : '/person'}
                   </div>
                 )}
@@ -120,7 +120,7 @@ export default function MapView({ events, center }: MapViewProps) {
                   style={{
                     display: 'block',
                     textAlign: 'center',
-                    background: 'linear-gradient(135deg, #0ea5e9, #8b5cf6)',
+                    background: 'linear-gradient(135deg, #8B1E2D, #731723)',
                     color: 'white',
                     fontSize: '12px',
                     padding: '6px 12px',

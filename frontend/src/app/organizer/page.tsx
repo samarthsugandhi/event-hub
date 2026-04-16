@@ -120,10 +120,10 @@ export default function OrganizerDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'My Events', value: stats.total, icon: Calendar, color: 'from-blue-500 to-cyan-500' },
-          { label: 'Upcoming', value: stats.upcoming, icon: Clock, color: 'from-purple-500 to-pink-500' },
-          { label: 'Registrations', value: stats.totalRegs, icon: Users, color: 'from-green-500 to-emerald-500' },
-          { label: 'Attendance', value: stats.totalAtt, icon: CheckCircle, color: 'from-orange-500 to-amber-500' },
+          { label: 'My Events', value: stats.total, icon: Calendar, color: 'from-[#8B1E2D] to-[#6b4f4f]' },
+          { label: 'Upcoming', value: stats.upcoming, icon: Clock, color: 'from-[#C6A75E] to-[#8B1E2D]' },
+          { label: 'Registrations', value: stats.totalRegs, icon: Users, color: 'from-[#5B6E5D] to-[#3f4f42]' },
+          { label: 'Attendance', value: stats.totalAtt, icon: CheckCircle, color: 'from-[#a6844a] to-[#5f4b2a]' },
         ].map((stat) => (
           <div key={stat.label} className="glass-card text-center">
             <div className={`w-10 h-10 mx-auto mb-3 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
@@ -207,7 +207,7 @@ export default function OrganizerDashboard() {
                   <Link href={`/events/${event._id}`} className="p-2 rounded-lg hover:bg-white/10 text-gray-400 transition-colors" title="View Event">
                     <Eye className="w-4 h-4" />
                   </Link>
-                  <Link href={`/organizer/submit?edit=${event._id}`} className="p-2 rounded-lg hover:bg-blue-500/10 text-gray-400 hover:text-blue-400 transition-colors" title="Edit Event">
+                  <Link href={`/organizer/submit?edit=${event._id}`} className="p-2 rounded-lg hover:bg-primary-500/10 text-gray-400 hover:text-primary-300 transition-colors" title="Edit Event">
                     <Edit className="w-4 h-4" />
                   </Link>
                   <Link href={`/admin/analytics`} className="p-2 rounded-lg hover:bg-white/10 text-gray-400 transition-colors" title="Analytics">

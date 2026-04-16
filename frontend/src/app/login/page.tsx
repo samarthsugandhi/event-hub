@@ -116,7 +116,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2.5 mb-4">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center shadow-lg shadow-primary-500/25">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary-500 to-[#6b4f4f] flex items-center justify-center shadow-lg shadow-primary-500/25">
               <Zap className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold gradient-text">BEC Event Hub</span>

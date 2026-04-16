@@ -240,7 +240,7 @@ export default function RegisterPage() {
 
           {/* Event Pass */}
           <div className="glass rounded-2xl p-6 mb-6 border border-primary-500/20 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 to-purple-500" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 to-[#6b4f4f]" />
 
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs text-primary-400 font-mono">{registration.registrationId}</span>
@@ -376,7 +376,7 @@ export default function RegisterPage() {
               <span className="badge bg-green-500/20 text-green-300 border-green-500/30">🎉 Free</span>
             )}
             {isTeamEvent && (
-              <span className="badge bg-purple-500/20 text-purple-300 border-purple-500/30 flex items-center gap-1">
+              <span className="badge bg-primary-500/20 text-[#D6C7A1] border-primary-500/30 flex items-center gap-1">
                 <UsersRound className="w-3 h-3" /> Team ({event.minTeamSize}–{event.maxTeamSize} members)
               </span>
             )}
@@ -509,7 +509,7 @@ export default function RegisterPage() {
           {isTeamEvent && (
             <div className="space-y-4 pt-4 border-t border-white/[0.06]">
               <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                <UsersRound className="w-5 h-5 text-purple-400" /> Team Details
+                <UsersRound className="w-5 h-5 text-[#C6A75E]" /> Team Details
               </h3>
 
               <div>

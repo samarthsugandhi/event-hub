@@ -5,12 +5,6 @@ import { useEffect, useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Event, CATEGORY_LABELS } from '@/types';
 import { formatDate, getCategoryBg, isEventLive } from '@/lib/utils';
-import dynamic from 'next/dynamic';
-
-const AnimatedBackground = dynamic(
-  () => import('@/components/three/AnimatedBackground'),
-  { ssr: false }
-);
 
 interface FeaturedBannerProps {
   events: Event[];
@@ -34,11 +28,9 @@ export default function FeaturedBanner({ events }: FeaturedBannerProps) {
 
   return (
     <div className="relative h-[420px] rounded-3xl overflow-hidden glass border border-white/[0.08]">
-      {/* Three.js Background */}
-      <AnimatedBackground className="opacity-40" />
-
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#040816]/92 via-[#071123]/65 to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(198,167,94,0.18),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(139,30,45,0.24),transparent_45%)]" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A]/95 via-[#111111]/80 to-[#0A0A0A]/50" />
+      <div className="grain-overlay absolute inset-0 opacity-20" />
 
       {/* Content */}
       <div className="relative z-10 h-full flex items-center p-8 md:p-12">
@@ -48,13 +40,13 @@ export default function FeaturedBanner({ events }: FeaturedBannerProps) {
               {CATEGORY_LABELS[event.category]}
             </span>
             {live && (
-                <span className="badge-live text-xs shadow-[0_0_22px_rgba(248,113,113,0.18)]">
+                <span className="badge-live text-xs shadow-[0_0_22px_rgba(139,30,45,0.22)]">
                 <span className="w-1.5 h-1.5 bg-red-400 rounded-full mr-1.5 animate-pulse" />
                 LIVE NOW
               </span>
             )}
             {event.featured && (
-              <span className="badge bg-cyan-500/15 text-cyan-200 border-cyan-400/30 text-xs">
+              <span className="badge bg-[#C6A75E]/20 text-[#F5F5F5] border-[#C6A75E]/30 text-xs">
                 ⭐ Featured
               </span>
             )}
@@ -64,11 +56,11 @@ export default function FeaturedBanner({ events }: FeaturedBannerProps) {
             {event.title}
           </h2>
 
-          <p className="text-gray-400 text-sm mb-6 line-clamp-2">
+          <p className="text-[#B0B0B0] text-sm mb-6 line-clamp-2">
             {event.description}
           </p>
 
-          <div className="flex items-center gap-6 mb-6 text-sm text-gray-400">
+          <div className="flex items-center gap-6 mb-6 text-sm text-[#B0B0B0]">
             <span>📅 {formatDate(event.date)}</span>
             <span>📍 {event.venue}</span>
             <span>👥 {event.registrationCount}/{event.maxParticipants}</span>
@@ -100,7 +92,7 @@ export default function FeaturedBanner({ events }: FeaturedBannerProps) {
                 key={i}
                 onClick={() => setCurrent(i)}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  i === current ? 'bg-primary-400 w-6' : 'bg-white/20 hover:bg-white/40'
+                  i === current ? 'bg-[#C6A75E] w-6' : 'bg-white/20 hover:bg-white/40'
                 }`}
               />
             ))}

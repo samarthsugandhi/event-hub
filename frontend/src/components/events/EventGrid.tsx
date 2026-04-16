@@ -12,10 +12,10 @@ interface EventGridProps {
 export default function EventGrid({ events, title, emptyMessage = 'No events found' }: EventGridProps) {
   return (
     <section>
-      {title && <h2 className="section-title">{title}</h2>}
+      {title && <h2 className="section-title tracking-[-0.02em]">{title}</h2>}
       {events.length === 0 ? (
         <div className="glass-card text-center py-12">
-          <p className="text-gray-500">{emptyMessage}</p>
+          <p className="text-[#B0B0B0]">{emptyMessage}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

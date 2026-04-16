@@ -156,12 +156,12 @@ export default function AdminDashboard() {
   }
 
   const statCards = [
-    { label: 'Total Events', value: stats?.totalEvents || 0, icon: Calendar, color: 'from-blue-500 to-cyan-500' },
-    { label: 'Upcoming', value: stats?.upcomingEvents || 0, icon: Clock, color: 'from-purple-500 to-pink-500' },
-    { label: 'Registrations', value: stats?.totalRegistrations || 0, icon: Users, color: 'from-green-500 to-emerald-500' },
-    { label: 'Attendance', value: stats?.totalAttendance || 0, icon: CheckCircle, color: 'from-orange-500 to-amber-500' },
-    { label: 'Pending', value: stats?.pendingEvents || 0, icon: AlertCircle, color: 'from-red-500 to-rose-500' },
-    { label: 'Att. Rate', value: `${stats?.attendanceRate || 0}%`, icon: TrendingUp, color: 'from-indigo-500 to-violet-500' },
+    { label: 'Total Events', value: stats?.totalEvents || 0, icon: Calendar, color: 'from-[#8B1E2D] to-[#6b4f4f]' },
+    { label: 'Upcoming', value: stats?.upcomingEvents || 0, icon: Clock, color: 'from-[#C6A75E] to-[#8B1E2D]' },
+    { label: 'Registrations', value: stats?.totalRegistrations || 0, icon: Users, color: 'from-[#5B6E5D] to-[#3f4f42]' },
+    { label: 'Attendance', value: stats?.totalAttendance || 0, icon: CheckCircle, color: 'from-[#a6844a] to-[#5f4b2a]' },
+    { label: 'Pending', value: stats?.pendingEvents || 0, icon: AlertCircle, color: 'from-[#7f1d1d] to-[#8B1E2D]' },
+    { label: 'Att. Rate', value: `${stats?.attendanceRate || 0}%`, icon: TrendingUp, color: 'from-[#B0B0B0] to-[#5B6E5D]' },
   ];
 
   const statusFilters = ['', 'pending', 'published', 'rejected', 'cancelled'];

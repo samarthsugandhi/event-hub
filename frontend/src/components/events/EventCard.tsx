@@ -32,7 +32,7 @@ export default function EventCard({ event }: EventCardProps) {
             <div
               className="w-full h-full flex items-center justify-center"
               style={{
-                background: `linear-gradient(135deg, ${getCategoryBg(event.category).includes('blue') ? '#1e40af' : '#6d28d9'}22, ${getCategoryBg(event.category).includes('blue') ? '#3b82f6' : '#8b5cf6'}33)`,
+                background: 'linear-gradient(135deg, rgba(139,30,45,0.28), rgba(198,167,94,0.18))',
               }}
             >
               <span className="text-4xl opacity-40">📅</span>
@@ -68,27 +68,27 @@ export default function EventCard({ event }: EventCardProps) {
           </div>
 
           {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a1a] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
         </div>
 
         {/* Content */}
         <div className="flex-1 flex flex-col pt-2">
-          <h3 className="text-lg font-semibold text-white group-hover:text-primary-300 transition-colors line-clamp-2 mb-2">
+          <h3 className="text-lg font-semibold text-white group-hover:text-[#C6A75E] transition-colors line-clamp-2 mb-2">
             {event.title}
           </h3>
 
           <div className="space-y-2 mb-4 flex-1">
-            <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <Calendar className="w-3.5 h-3.5 text-primary-400" />
+            <div className="flex items-center gap-2 text-[#B0B0B0] text-sm">
+              <Calendar className="w-3.5 h-3.5 text-[#C6A75E]" />
               <span>{formatDate(event.date)}</span>
-              {event.time && <span className="text-gray-600">• {event.time}</span>}
+              {event.time && <span className="text-[#7f7f7f]">• {event.time}</span>}
             </div>
-            <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <MapPin className="w-3.5 h-3.5 text-primary-400" />
+            <div className="flex items-center gap-2 text-[#B0B0B0] text-sm">
+              <MapPin className="w-3.5 h-3.5 text-[#C6A75E]" />
               <span className="truncate">{event.venue}</span>
             </div>
-            <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <Users className="w-3.5 h-3.5 text-primary-400" />
+            <div className="flex items-center gap-2 text-[#B0B0B0] text-sm">
+              <Users className="w-3.5 h-3.5 text-[#C6A75E]" />
               <span>{event.registrationCount} / {event.maxParticipants} registered</span>
             </div>
           </div>
@@ -103,14 +103,14 @@ export default function EventCard({ event }: EventCardProps) {
                   background: isFull
                     ? 'linear-gradient(90deg, #ef4444, #dc2626)'
                     : fillPercent > 90
-                    ? 'linear-gradient(90deg, #ef4444, #f97316)'
+                    ? 'linear-gradient(90deg, #8B1E2D, #6B4F4F)'
                     : fillPercent > 60
-                    ? 'linear-gradient(90deg, #f97316, #eab308)'
-                    : 'linear-gradient(90deg, #6366f1, #8b5cf6)',
+                    ? 'linear-gradient(90deg, #6B4F4F, #C6A75E)'
+                    : 'linear-gradient(90deg, #5B6E5D, #C6A75E)',
                 }}
               />
             </div>
-            <p className={`text-xs mt-1 ${isFull ? 'text-red-400 font-semibold' : isPastDeadline ? 'text-orange-400 font-medium' : 'text-gray-500'}`}>
+            <p className={`text-xs mt-1 ${isFull ? 'text-red-400 font-semibold' : isPastDeadline ? 'text-[#6B4F4F] font-medium' : 'text-[#9a9a9a]'}`}>
               {isFull ? '🔴 Registration Full' : isPastDeadline ? '⏰ Registration Closed' : `${remainingSeats} seats left`}
             </p>
           </div>
@@ -119,19 +119,19 @@ export default function EventCard({ event }: EventCardProps) {
           <div className="flex items-center justify-between pt-3 border-t border-white/[0.06]">
             <div className="flex items-center gap-2">
               {event.pricingType === 'paid' ? (
-                <span className="text-xs font-medium text-primary-300 flex items-center gap-0.5">
+                <span className="text-xs font-medium text-[#C6A75E] flex items-center gap-0.5">
                   <IndianRupee className="w-3 h-3" />₹{event.price}
                 </span>
               ) : (
-                <span className="text-xs font-medium text-green-400">Free</span>
+                <span className="text-xs font-medium text-[#5B6E5D]">Free</span>
               )}
               {event.participationType === 'team' && (
-                <span className="text-xs text-purple-300 flex items-center gap-0.5">
+                <span className="text-xs text-[#B0B0B0] flex items-center gap-0.5">
                   <UsersRound className="w-3 h-3" /> Team
                 </span>
               )}
             </div>
-            <span className="text-primary-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+            <span className="text-[#C6A75E] text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
               View <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </div>

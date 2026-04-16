@@ -20,13 +20,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           },
         }}
       />
-      <Navbar />
-      <main className="min-h-screen pt-16">
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
-      </main>
-      <Footer />
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1 pt-16">
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+        </main>
+        <Footer />
+      </div>
     </AuthProvider>
   );
 }

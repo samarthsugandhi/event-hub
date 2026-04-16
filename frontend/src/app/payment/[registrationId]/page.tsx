@@ -230,7 +230,7 @@ export default function PaymentPage() {
               {event?.priceType === 'per_team' && (
                 <div className="flex justify-between">
                   <span className="text-gray-500">Payment Type</span>
-                  <span className="text-purple-300">Team Payment (Leader Pays)</span>
+                  <span className="text-[#D6C7A1]">Team Payment (Leader Pays)</span>
                 </div>
               )}
               {payment.transactionId && (
@@ -328,13 +328,13 @@ export default function PaymentPage() {
             <>
               <div className="flex items-center justify-between mb-3 text-sm">
                 <span className="text-gray-500 flex items-center gap-1.5">
-                  <UsersRound className="w-3.5 h-3.5 text-purple-400" />
+                  <UsersRound className="w-3.5 h-3.5 text-[#C6A75E]" />
                   Team: {registration.teamName}
                 </span>
-                <span className="text-purple-300">{teamSize} members</span>
+                <span className="text-[#D6C7A1]">{teamSize} members</span>
               </div>
-              <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20 mb-3">
-                <p className="text-xs text-purple-300 text-center">
+              <div className="p-2 rounded-lg bg-primary-500/10 border border-primary-500/20 mb-3">
+                <p className="text-xs text-[#D6C7A1] text-center">
                   💡 Team payment — Leader pays ₹{payment.amount} for the entire team
                 </p>
               </div>
